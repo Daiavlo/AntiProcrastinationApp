@@ -1,0 +1,133 @@
+.landing-page {
+  flex: 1;
+  display: flex;
+  background-color: var(--color-bg-base);
+}
+
+.landing-container {
+  max-width: var(--max-content-width);
+  margin: 0 auto;
+  width: 100%;
+  padding: 4rem 2rem;
+}
+
+.landing-hero {
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+  margin-top: 2rem;
+}
+
+.hero-content {
+  flex: 1;
+  max-width: 500px;
+}
+
+.hero-eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-black);
+  color: var(--color-primary-red);
+  background-color: rgba(217, 48, 37, 0.1);
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  letter-spacing: 0.1em;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+}
+
+.hero-title {
+  font-size: 4rem;
+  font-weight: var(--font-weight-black);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  color: var(--color-text-dark);
+  margin-bottom: 1.5rem;
+}
+
+.hero-subtitle {
+  font-size: 1.125rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  margin-bottom: 2.5rem;
+  max-width: 440px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn-lg {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+}
+
+.hero-image {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+}
+
+.hero-image-placeholder {
+  width: 100%;
+  height: 400px;
+  background: linear-gradient(135deg, #1A1C1E 0%, #2D3134 100%);
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Simulate the little card in the corner of the reference */
+.completion-card {
+  position: absolute;
+  bottom: -20px;
+  left: -20px;
+  background-color: var(--color-bg-surface);
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--color-border);
+  z-index: 2;
+  min-width: 160px;
+}
+
+.card-value {
+  font-size: 2rem;
+  font-weight: var(--font-weight-black);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.card-label {
+  font-size: 0.65rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-muted);
+  letter-spacing: 0.1em;
+}
+
+@media (max-width: 900px) {
+  .landing-hero {
+    flex-direction: column;
+    text-align: center;
+    gap: 3rem;
+  }
+  
+  .hero-content {
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero-subtitle {
+    text-align: center;
+  }
+  
+  .completion-card {
+    left: 20px;
+    bottom: 20px;
+  }
+}

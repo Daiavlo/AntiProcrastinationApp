@@ -1,0 +1,39 @@
+.not-implemented-page {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-bg-base);
+  padding: 2rem;
+}
+
+.content-box {
+  text-align: center;
+  background-color: var(--color-bg-surface);
+  padding: 4rem 3rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--color-border);
+  max-width: 500px;
+  width: 100%;
+}
+
+.not-implemented-page .title {
+  font-size: 2rem;
+  font-weight: var(--font-weight-black);
+  color: var(--color-primary-red);
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.not-implemented-page .subtitle {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  margin-bottom: 2.5rem;
+}
+
+.action-row {
+  display: flex;
+  justify-content: center;
+}

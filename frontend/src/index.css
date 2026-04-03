@@ -1,100 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-
-:root {
-  /* Color Palette based on VOID reference */
-  --color-primary-red: #D93025; /* Saturated, urgent red */
-  --color-primary-hover: #B8251C;
-  --color-bg-base: #F4F5F5; /* Very light gray for background */
-  --color-bg-surface: #FFFFFF; /* White for cards/forms */
-  --color-text-dark: #1F2021; /* High contrast dark gray/black */
-  --color-text-muted: #5F6368; /* Mid gray for secondary text */
-  --color-border: #E0E0E0;
-
-  /* Typography */
-  --font-family-base: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-weight-regular: 400;
-  --font-weight-medium: 500;
-  --font-weight-bold: 700;
-  --font-weight-black: 900;
-  
-  /* Layout Options */
-  --header-height: 80px;
-  --max-content-width: 1200px;
-}
-
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
 body {
-  font-family: var(--font-family-base);
-  background-color: var(--color-bg-base);
-  color: var(--color-text-dark);
-  line-height: 1.5;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: 100vh;
+  background: linear-gradient(#2a00b7, #42006c);
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button {
-  font-family: inherit;
-  border: none;
-  cursor: pointer;
-}
-
-input {
-  font-family: inherit;
-}
-
-/* Base utility for buttons based on design */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
-  font-weight: var(--font-weight-bold);
-  font-size: 1rem;
-  transition: all 0.2s ease-in-out;
-}
-
-.btn-primary {
-  background-color: var(--color-primary-red);
-  color: white;
-}
-
-.btn-primary:hover {
-  background-color: var(--color-primary-hover);
-  transform: translateY(-1px);
-}
-
-.btn-secondary {
-  background-color: var(--color-border);
-  color: var(--color-text-dark);
-}
-
-.btn-secondary:hover {
-  background-color: #d0d0d0;
-}
-
-/* Utilities */
-.text-red {
-  color: var(--color-primary-red);
-  font-style: italic; /* From UI: "Kinetic Void" is italicized */
-}
-
-/* Minimalistic fade-in animation for pages */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.page-transition {
-  animation: fadeIn 0.4s ease-out forwards;
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
 }

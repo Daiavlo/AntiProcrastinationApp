@@ -20,7 +20,7 @@ const LoginSignup = () => {
             <div className="form-container sign-up-container">
                 <form action="#" onSubmit={(e) => e.preventDefault()}>
                     <h1>Create Account</h1>
-                    <span>use your email for registration</span>
+
                     <div className="input-group">
                         <img src={user_icon} alt="user" />
                         <input type="text" placeholder="Username" />

@@ -1,0 +1,127 @@
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    background-color: var(--bg-secondary);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 30px 20px;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+.logo {
+    color: var(--accent);
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 40px;
+    padding-left: 10px;
+}
+
+.nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 15px;
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-weight: 600;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+    background-color: var(--sidebar-hover);
+}
+
+.nav-link.active {
+    background-color: var(--bg-primary);
+    color: var(--accent);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.nav-link.active .nav-icon {
+    color: var(--accent);
+}
+
+.nav-icon {
+    font-size: 20px;
+}
+
+.sidebar-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.user-profile-capsule {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    background-color: var(--bg-primary);
+    border-radius: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--bg-tertiary);
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+.user-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.extra-links {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.extra-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 15px;
+    border: none;
+    background: none;
+    color: var(--text-secondary);
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: 0.2s;
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+}
+
+.extra-link:hover {
+    background-color: var(--sidebar-hover);
+}
+
+.extra-link.logout {
+    color: var(--text-muted);
+}

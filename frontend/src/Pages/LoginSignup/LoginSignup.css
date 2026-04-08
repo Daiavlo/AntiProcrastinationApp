@@ -226,3 +226,15 @@
 .container.right-panel-active .overlay-right {
     transform: translateX(20%);
 }
+
+.auth-error {
+    color: #e53e3e;
+    font-size: 12px;
+    margin: 4px 0;
+    background: rgba(229, 62, 62, 0.08);
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(229, 62, 62, 0.25);
+    width: 100%;
+    text-align: center;
+}

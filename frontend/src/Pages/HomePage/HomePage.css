@@ -1,0 +1,338 @@
+.hp-layout {
+    display: flex;
+    background-color: var(--bg-primary);
+    min-height: 100vh;
+    padding-left: 260px;
+    /* Width of Sidebar */
+}
+
+.hp-main-content {
+    flex: 1;
+    padding: 40px 60px;
+    background-color: var(--bg-primary);
+    position: relative;
+    width: 100%;
+    overflow-y: auto;
+}
+
+/* Header */
+.hp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto 50px auto;
+    max-width: 1200px;
+}
+
+.hp-profile-summary {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.hp-avatar-container {
+    position: relative;
+}
+
+.hp-main-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 3px solid var(--accent);
+    padding: 3px;
+    background-color: var(--bg-primary);
+}
+
+.hp-status-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--bg-primary);
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+}
+
+.hp-status-dot.online {
+    background-color: #22c55e;
+}
+
+.hp-status-dot.offline {
+    background-color: var(--text-muted);
+}
+
+.hp-username {
+    font-size: 42px;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.hp-badges {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 5px;
+}
+
+.hp-badge-momentum {
+    background-color: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 6px;
+}
+
+.hp-rank-text {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.hp-header-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.hp-icon-btn {
+    width: 54px;
+    height: 54px;
+    border-radius: 14px;
+    border: none;
+    background-color: var(--bg-tertiary);
+    font-size: 24px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.hp-icon-btn:hover {
+    background-color: var(--sidebar-hover);
+}
+
+/* Grid (Now Single Column) */
+.hp-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Sections */
+.hp-section {
+    margin-bottom: 40px;
+}
+
+.hp-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.hp-section-header h2 {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.hp-text-btn {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Friends List */
+.hp-friends-list {
+    display: flex;
+    gap: 25px;
+    background-color: var(--bg-tertiary);
+    padding: 35px;
+    border-radius: 20px;
+    overflow-x: auto;
+}
+
+.hp-friend-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    min-width: 80px;
+}
+
+.hp-friend-avatar-wrap {
+    position: relative;
+}
+
+.hp-friend-avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: #333;
+}
+
+.hp-friend-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+.hp-add-avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 2px dashed var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+/* Task Cards */
+.hp-task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.hp-task-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--bg-primary);
+    padding: 40px;
+    border-radius: 18px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+}
+
+.hp-task-card.priority::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background-color: var(--accent);
+}
+
+.hp-task-card.standard::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background-color: var(--border);
+}
+
+.hp-task-info {
+    flex: 1;
+}
+
+.hp-task-cat {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+}
+
+.hp-task-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 10px 0 20px 0;
+}
+
+.hp-progress-container {
+    width: 100%;
+    max-width: 700px;
+}
+
+.hp-progress-bar {
+    height: 6px;
+    background-color: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.hp-progress-fill {
+    height: 100%;
+    background-color: var(--accent);
+    border-radius: 3px;
+}
+
+.hp-task-card.standard .hp-progress-fill {
+    background-color: var(--text-muted);
+}
+
+.hp-progress-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.hp-task-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.hp-focus-btn {
+    padding: 14px 34px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.hp-focus-btn.primary {
+    background-color: var(--accent);
+    color: #fff;
+}
+
+.hp-focus-btn.secondary {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.hp-more-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+/* FAB */
+.hp-fab {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: var(--accent);
+    color: #fff;
+    font-size: 30px;
+    border: none;
+    box-shadow: 0 4px 15px rgba(204, 41, 41, 0.4);
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.hp-fab:hover {
+    transform: scale(1.1);
+}

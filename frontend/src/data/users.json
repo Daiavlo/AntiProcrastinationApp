@@ -1,0 +1,86 @@
+[
+  {
+    "id": 1,
+    "username": "GojoSatoru2",
+    "email": "player@example.com",
+    "password": "password123",
+    "avatar": "/Assets/gojo2.jpg",
+    "robux": 420,
+    "level": 12,
+    "friends_count": 34,
+    "rank": "Flow State Catalyst",
+    "momentum": "HIGH",
+    "streak": 12,
+    "tasks": [
+      {
+        "id": 101,
+        "category": "HISTORY PROJECT",
+        "title": "Finish History Essay",
+        "progress": 65,
+        "remaining": "15 MINS REMAINING",
+        "type": "priority"
+      },
+      {
+        "id": 102,
+        "category": "ACADEMICS",
+        "title": "Math Quiz Prep",
+        "progress": 20,
+        "remaining": "DUE TOMORROW",
+        "type": "standard"
+      }
+    ],
+    "friends": [
+      {
+        "id": 201,
+        "name": "Void_Runner",
+        "status": "online",
+        "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Void"
+      },
+      {
+        "id": 202,
+        "name": "Echo_Lass",
+        "status": "online",
+        "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Echo"
+      },
+      {
+        "id": 203,
+        "name": "Static_X",
+        "status": "offline",
+        "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Static"
+      },
+      {
+        "id": 204,
+        "name": "Focus_Guru",
+        "status": "online",
+        "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Focus"
+      }
+    ],
+    "activities": [
+      {
+        "id": 301,
+        "title": "Completed \"Physics Lab\"",
+        "time": "2 HOURS AGO",
+        "type": "completed"
+      },
+      {
+        "id": 302,
+        "title": "Started \"History Essay\"",
+        "time": "4 HOURS AGO",
+        "type": "started"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "username": "GojoSatoru",
+    "email": "gojo@example.com",
+    "password": "infinity",
+    "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Gojo",
+    "robux": 9999,
+    "level": 99,
+    "friends_count": 1,
+    "rank": "Infinite Void",
+    "momentum": "CRITICAL",
+    "streak": 999
+  }
+]

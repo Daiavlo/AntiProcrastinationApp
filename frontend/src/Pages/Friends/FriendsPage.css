@@ -1,0 +1,221 @@
+.friends-page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.friends-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+.friends-header h1 {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.search-bar-wrap {
+    display: flex;
+    align-items: center;
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0 15px;
+    width: 350px;
+    transition: 0.2s;
+}
+
+.search-bar-wrap:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(204, 41, 41, 0.1);
+}
+
+.friend-search-input {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 12px 10px;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.friend-search-input:focus {
+    outline: none;
+}
+
+.search-icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* Grid View */
+.friends-grid-view {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 40px;
+}
+
+.friends-section-main h2, .suggested-friends-section h2 {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 25px;
+    color: var(--text-primary);
+}
+
+.friends-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.friend-compact-card {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 25px;
+    transition: 0.2s;
+    box-shadow: var(--card-shadow);
+}
+
+.friend-compact-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+}
+
+.friend-card-top {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.friend-card-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: var(--bg-tertiary);
+}
+
+.friend-card-name {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.friend-card-status {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.friend-card-stats {
+    display: flex;
+    justify-content: center;
+    padding: 15px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+}
+
+.stat-mini {
+    text-align: center;
+}
+
+.stat-mini-val {
+    display: block;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--accent);
+}
+
+.stat-mini-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.friend-card-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.compare-btn {
+    flex: 1;
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.view-profile-btn {
+    flex: 1;
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+/* Suggested */
+.suggested-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.suggested-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: var(--bg-tertiary);
+    padding: 15px;
+    border-radius: 15px;
+}
+
+.suggested-avatar {
+    width: 44px;
+    height: 44px;
+    background-color: var(--border);
+    border-radius: 50%;
+}
+
+.suggested-info {
+    flex: 1;
+}
+
+.suggested-name {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.suggested-mutual {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.add-friend-btn-small {
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}

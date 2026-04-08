@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import "./LandingPage.css";
-import tabby from "../Assets/tabbyLogo.png";
-import gojo from "../Assets/gojo.png";
-import sukuna from "../Assets/sukuna.png";
+import tabby from "../../../Components/Assets/tabbyLogo.png";
+import gojo from "../../../Components/Assets/gojo.png";
+import sukuna from "../../../Components/Assets/sukuna.png";
 
 const useScrollReveal = (threshold = 0.15) => {
     const ref = useRef(null);

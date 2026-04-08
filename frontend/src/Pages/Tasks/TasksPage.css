@@ -95,8 +95,8 @@
 }
 
 .priority-indicator.high { background-color: var(--accent); }
-.priority-indicator.medium { background-color: #f59e0b; }
-.priority-indicator.low { background-color: #10b981; }
+.priority-indicator.medium { background-color: var(--warning); }
+.priority-indicator.low { background-color: var(--info); }
 
 .task-row-main {
     flex: 1;

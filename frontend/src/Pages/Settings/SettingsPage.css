@@ -87,6 +87,10 @@ input:checked + .slider:before {
     transform: translateX(30px);
 }
 
+input:checked + .priority-indicator.high { background-color: var(--accent); }
+.priority-indicator.medium { background-color: var(--warning); }
+.priority-indicator.low { background-color: var(--info); }
+
 /* Presets */
 .presets-grid {
     display: grid;
@@ -121,11 +125,11 @@ input:checked + .slider:before {
 }
 
 .preset-card.light .preset-preview {
-    background: linear-gradient(#FCF3F1, #F7FAFB);
+    background: linear-gradient(135deg, #ffffff 60%, #fff0f0 100%);
 }
 
 .preset-card.dark .preset-preview {
-    background: #121212;
+    background: linear-gradient(145deg, #0a0a0a 0%, #1a0808 100%);
 }
 
 .preset-card span {

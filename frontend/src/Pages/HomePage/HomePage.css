@@ -54,7 +54,7 @@
 }
 
 .hp-status-dot.online {
-    background-color: #22c55e;
+    background-color: var(--success);
 }
 
 .hp-status-dot.offline {
@@ -297,6 +297,10 @@
     cursor: pointer;
     transition: 0.2s;
 }
+
+.hp-focus-btn.priority-indicator.high { background-color: var(--accent); }
+.priority-indicator.medium { background-color: var(--warning); }
+.priority-indicator.low { background-color: var(--info); }
 
 .hp-focus-btn.primary {
     background-color: var(--accent);

@@ -2,20 +2,35 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"os"
+
+	"github.com/daiavlo/antiprocrastination/backend/internal/repository"
+	"github.com/daiavlo/antiprocrastination/backend/internal/router"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	fmt.Println("Starting AntiProcrastinationApp API...")
+	// Load .env file (only needed in development)
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found, using system env")
+	}
 
-	// The standard library's net/http router
-	mux := http.NewServeMux()
+	// Connect to PostgreSQL
+	db := repository.Connect()
+	defer db.Close()
 
-	// Define your first route here:
-	// mux.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
-	//     fmt.Fprintf(w, "pong")
-	// })
+	// Set up all routes + handlers
+	r := router.SetUp(db)
 
-	fmt.Println("Server listening on :8080")
-	http.ListenAndServe(":8080", mux)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	fmt.Printf("Server listening on :%s\n", port)
+
+	log.Fatal(http.ListenAndServe(":"+port, r))
 }

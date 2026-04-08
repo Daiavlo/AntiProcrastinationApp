@@ -3,29 +3,31 @@
 }
 
 .container {
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25),
-        0 10px 10px rgba(0, 0, 0, 0.22);
+    background-color: var(--bg-primary);
+    border-radius: 20px;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.1),
+        0 10px 10px rgba(0, 0, 0, 0.08);
     position: relative;
     overflow: hidden;
     width: 900px;
     max-width: 100%;
     min-height: 550px;
     margin: 100px auto;
+    border: 1px solid var(--border);
 }
 
 .container h1 {
-    font-weight: bold;
+    font-weight: 900;
     margin: 0;
-    color: #1a1a1a;
+    color: var(--text-primary);
+    letter-spacing: -1px;
 }
 
 .container p {
-    font-size: 14px;
-    font-weight: 100;
-    line-height: 20px;
-    letter-spacing: 0.5px;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--text-secondary);
     margin: 20px 0 30px;
 }
 
@@ -34,24 +36,34 @@
 }
 
 .container a {
-    color: #333;
+    color: var(--text-muted);
     font-size: 14px;
     text-decoration: none;
     margin: 15px 0;
+    transition: color 0.2s;
+}
+
+.container a:hover {
+    color: var(--accent);
 }
 
 .container button {
-    border-radius: 20px;
-    border: 1px solid #cc2929;
-    background-color: #cc2929;
+    border-radius: 50px;
+    border: 1px solid var(--accent);
+    background-color: var(--accent);
     color: #FFFFFF;
-    font-size: 12px;
-    font-weight: bold;
-    padding: 12px 45px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    transition: transform 80ms ease-in;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 14px 45px;
+    letter-spacing: 0.5px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
     cursor: pointer;
+    box-shadow: 0 4px 14px rgba(204, 41, 41, 0.25);
+}
+
+.container button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(204, 41, 41, 0.4);
 }
 
 .container button:active {
@@ -81,10 +93,16 @@
 .container .input-group {
     display: flex;
     align-items: center;
-    background-color: #eee;
-    margin: 8px 0;
+    background-color: var(--bg-tertiary);
+    margin: 10px 0;
     width: 100%;
-    border-radius: 4px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    transition: border-color 0.2s;
+}
+
+.container .input-group:focus-within {
+    border-color: var(--accent);
 }
 
 .container .input-group img {
@@ -162,9 +180,8 @@
 }
 
 .overlay {
-    background: #cc2929;
-    background: -webkit-linear-gradient(to right, #a21a1a, #cc2929);
-    background: linear-gradient(to right, #a21a1a, #cc2929);
+    background: var(--accent);
+    background: linear-gradient(135deg, #a21a1a, var(--accent));
     background-repeat: no-repeat;
     background-size: cover;
     background-position: 0 0;

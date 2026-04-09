@@ -4,12 +4,13 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(0, 0, 0, 0.9);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 2000;
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(8px);
+    animation: fadeIn 0.5s ease-out;
 }
 
 .compare-modal-content {
@@ -22,6 +23,11 @@
     position: relative;
     border: 2px solid var(--accent);
     box-shadow: 0 0 40px rgba(204, 41, 41, 0.5);
+    animation: modalZoomIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.compare-content-layer.battle-mode {
+    animation: screen-shake 0.1s infinite;
 }
 
 .compare-bg-video {
@@ -169,13 +175,19 @@
     position: absolute;
     top: -5px;
     left: 50%;
-    width: 6px;
+    width: 8px;
     height: 50px;
     background: #fff;
     z-index: 10;
-    box-shadow: 0 0 15px #fff;
+    box-shadow: 0 0 20px #fff;
     border-radius: 4px;
     animation: marker-pulse 0.8s infinite alternate;
+    transition: left 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tug-marker.active {
+    box-shadow: 0 0 40px #fff, 0 0 60px var(--accent);
+    width: 10px;
 }
 
 /* Energy Flare Effects */
@@ -219,6 +231,36 @@
     0% { opacity: 0; transform: translate(-50%, -50%) rotate(0deg); }
     50% { opacity: 0.6; }
     100% { opacity: 0; transform: translate(-50%, -50%) rotate(180deg); }
+}
+
+.active .tug-marker::after {
+    animation: beam-spark 0.3s infinite linear;
+    width: 250px;
+    opacity: 0.8;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalZoomIn {
+    from { opacity: 0; transform: scale(0.5) translateY(50px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes screen-shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
 }
 
 .battle-status {

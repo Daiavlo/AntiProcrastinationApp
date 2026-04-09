@@ -25,16 +25,24 @@ func SetUp(db *sql.DB) http.Handler {
 	r.Post("/api/register", authH.Register)
 	r.Post("/api/login", authH.Login)
 
-	// Protected routes — JWT required
+	// Serve the uploads directory statically
+	r.Handle("/uploads/*", http.StripPrefix("/uploads/", http.FileServer(http.Dir("./uploads"))))
+
 	r.Group(func(r chi.Router) {
 		r.Use(appMiddleware.AuthMiddleware)
+
+		r.Get("/api/profile", authH.GetProfile)
+		r.Put("/api/profile", authH.UpdateProfile)
+		r.Get("/api/profile/{id}", authH.GetAlienProfile)
 
 		r.Get("/api/tasks", taskH.GetTasks)
 		r.Post("/api/tasks", taskH.CreateTask)
 		r.Delete("/api/tasks/{id}", taskH.DeleteTask)
+		r.Put("/api/tasks/{id}/status", taskH.UpdateTaskStatus)
 
 		r.Get("/api/friends", friendH.GetFriends)
 		r.Post("/api/friends/add", friendH.SendRequest)
+		r.Get("/api/users/search", friendH.SearchUsers)
 	})
 
 	return r
@@ -43,7 +51,7 @@ func SetUp(db *sql.DB) http.Handler {
 func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET,POST,PATCH,DELETE,OPTIONS")
+		w.Header().Set("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Authorization,Content-Type")
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(204)

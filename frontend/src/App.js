@@ -7,6 +7,7 @@ import ProfilePage from './Pages/Profile/ProfilePage';
 import TasksPage from './Pages/Tasks/TasksPage';
 import FriendsPage from './Pages/Friends/FriendsPage';
 import SettingsPage from './Pages/Settings/SettingsPage';
+import AlienProfilePage from './Pages/Profile/AlienProfilePage';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/auth" element={<LoginSignup />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile/:id" element={<AlienProfilePage />} />
           <Route path="/tasks" element={<TasksPage />} />
           <Route path="/friends" element={<FriendsPage />} />
           <Route path="/settings" element={<SettingsPage />} />

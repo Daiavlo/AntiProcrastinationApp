@@ -1,4 +1,4 @@
-:root {
+:root, [data-theme='light'] {
   --bg-body: linear-gradient(135deg, #ffffff 60%, #fff0f0 100%);
   --bg-primary: #ffffff;
   --bg-secondary: #fefefe;

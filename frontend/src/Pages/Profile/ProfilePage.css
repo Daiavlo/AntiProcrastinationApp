@@ -14,7 +14,7 @@
     background-color: var(--accent);
 }
 
-.edit-banner-btn {
+.edit-banner-btn-label {
     position: absolute;
     top: 20px;
     right: 20px;
@@ -28,9 +28,10 @@
     cursor: pointer;
     backdrop-filter: blur(4px);
     transition: 0.2s;
+    display: inline-block;
 }
 
-.edit-banner-btn:hover {
+.edit-banner-btn-label:hover {
     background-color: rgba(0, 0, 0, 0.6);
 }
 
@@ -148,3 +149,102 @@
     text-transform: uppercase;
     letter-spacing: 1px;
 }
+
+/* Edit Mode Styles */
+.profile-edit-mode {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.profile-pronouns-input {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    font-family: inherit;
+    width: 150px;
+    margin-left: 15px;
+}
+
+.profile-bio-input {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-family: inherit;
+    resize: vertical;
+    width: 100%;
+    max-width: 600px;
+}
+
+.profile-edit-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.cancel-edit-action {
+    background-color: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    padding: 10px 24px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.cancel-edit-action:hover {
+    background-color: var(--bg-tertiary);
+}
+
+.save-edit-action {
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+    box-shadow: 0 4px 15px rgba(204, 41, 41, 0.3);
+}
+
+.save-edit-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(204, 41, 41, 0.4);
+}
+
+.compare-points-hero-btn {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(204, 41, 41, 0.4);
+    transition: 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.compare-points-hero-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(204, 41, 41, 0.6);
+}
+
+.alien-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 15px;
+}
+

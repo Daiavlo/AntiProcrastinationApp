@@ -1,14 +1,29 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../../Components/Sidebar/Sidebar";
 import { useTheme } from "../../context/ThemeContext";
 import "./SettingsPage.css";
 
 const SettingsPage = () => {
     const { theme, toggleTheme } = useTheme();
-    const user = JSON.parse(sessionStorage.getItem("currentUser"));
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const token = sessionStorage.getItem("token");
+        if (!token) {
+            window.location.href = "/auth";
+            return;
+        }
+
+        fetch("http://localhost:8080/api/profile", {
+            headers: { "Authorization": `Bearer ${token}` }
+        })
+        .then(res => res.json())
+        .then(data => setUser(data))
+        .catch(() => window.location.href = "/auth");
+    }, []);
 
     const handleLogout = () => {
-        sessionStorage.removeItem("currentUser");
+        sessionStorage.removeItem("token");
         window.location.href = "/auth";
     };
 

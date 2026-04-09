@@ -6,28 +6,51 @@ import "./HomePage.css";
 const HomePage = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
+    const [tasks, setTasks] = useState([]);
+    const [friends, setFriends] = useState([]);
 
     useEffect(() => {
-        const stored = sessionStorage.getItem("currentUser");
-        if (!stored) {
+        const token = sessionStorage.getItem("token");
+        if (!token) {
             navigate("/auth");
-        } else {
-            setUser(JSON.parse(stored));
+            return;
         }
+
+        const headers = { "Authorization": `Bearer ${token}` };
+
+        // Fetch Profile
+        fetch("http://localhost:8080/api/profile", { headers })
+            .then(res => res.json())
+            .then(data => setUser(data))
+            .catch(() => navigate("/auth"));
+
+        // Fetch Tasks
+        fetch("http://localhost:8080/api/tasks", { headers })
+            .then(res => res.json())
+            .then(data => setTasks(data || []))
+            .catch(console.error);
+
+        // Fetch Friends
+        fetch("http://localhost:8080/api/friends", { headers })
+            .then(res => res.json())
+            .then(data => setFriends(data || []))
+            .catch(console.error);
+
     }, [navigate]);
 
     const handleLogout = () => {
-        sessionStorage.removeItem("currentUser");
+        sessionStorage.removeItem("token");
         navigate("/auth");
     };
 
     const togglePriority = (taskId) => {
-        const updatedTasks = user.tasks.map(task => 
-            task.id === taskId ? { ...task, type: task.type === 'priority' ? 'standard' : 'priority' } : task
-        );
-        const updatedUser = { ...user, tasks: updatedTasks };
-        setUser(updatedUser);
-        sessionStorage.setItem("currentUser", JSON.stringify(updatedUser));
+        // Optimistic UI update or send to backend...
+        // Currently the backend doesn't have an endpoint for this, so we'll just toggle locally for now
+        setTasks(prev => prev.map(task => 
+            task.assignment_id === taskId 
+                ? { ...task, priority: task.priority === 'high' ? 'medium' : 'high' } 
+                : task
+        ));
     };
 
     if (!user) return null;
@@ -62,13 +85,17 @@ const HomePage = () => {
                                 <button className="hp-text-btn">View All</button>
                             </div>
                             <div className="hp-friends-list">
-                                {user.friends?.map((friend) => (
-                                    <div key={friend.id} className="hp-friend-item">
+                                {friends.map((friend) => (
+                                    <div 
+                                        key={friend.user_id} 
+                                        className="hp-friend-item" 
+                                        onClick={() => navigate(`/profile/${friend.friend_id || friend.user_id}`)}
+                                        style={{ cursor: 'pointer' }}
+                                    >
                                         <div className="hp-friend-avatar-wrap">
-                                            <img src={friend.avatar} alt={friend.name} className="hp-friend-avatar" />
-
+                                            <img src={`https://api.dicebear.com/7.x/bottts/svg?seed=${friend.friend_id || friend.user_id}`} alt="friend" className="hp-friend-avatar" />
                                         </div>
-                                        <span className="hp-friend-name">{friend.name}</span>
+                                        <span className="hp-friend-name">User #{friend.friend_id || friend.user_id}</span>
                                     </div>
                                 ))}
                                 <div className="hp-friend-item add-friend">
@@ -83,31 +110,29 @@ const HomePage = () => {
                             <div className="hp-section-header">
                                 <h2>Current Tasks</h2>
                                 <span className="hp-task-count">
-                                    {user.tasks?.filter(t => t.type === 'priority').length} Priority Tasks
+                                    {tasks.filter(t => (t.status === 'pending' || t.status === 'in_progress') && t.priority === 'high').length} Priority Tasks
                                 </span>
                             </div>
                             <div className="hp-task-list">
-                                {user.tasks?.map((task) => (
-                                    <div key={task.id} className={`hp-task-card ${task.type}`}>
+                                {tasks
+                                    .filter(t => t.status === 'pending' || t.status === 'in_progress')
+                                    .sort((a, b) => new Date(a.due_date) - new Date(b.due_date))
+                                    .map((task) => (
+                                    <div key={task.assignment_id} className={`hp-task-card ${task.priority}`}>
                                         <div className="hp-task-info">
-                                            <span className="hp-task-cat">{task.category}</span>
-                                            <h3 className="hp-task-title">{task.title}</h3>
-                                            <div className="hp-progress-container">
-                                                <div className="hp-progress-bar">
-                                                    <div className="hp-progress-fill" style={{ width: `${task.progress}%` }}></div>
-                                                </div>
-                                                <div className="hp-progress-stats">
-                                                    <span>{task.progress}% COMPLETE</span>
-                                                    <span>{task.remaining}</span>
-                                                </div>
+                                            <div className="hp-task-date-row">
+                                                <span className="hp-task-cat">General</span>
+                                                <span className="hp-task-due">Due: {task.due_date ? new Date(task.due_date).toLocaleDateString() : 'TBD'}</span>
                                             </div>
+                                            <h3 className="hp-task-title">{task.title}</h3>
+                                            <p>{task.description}</p>
                                         </div>
                                         <div className="hp-task-actions">
                                             <button 
-                                                className={`hp-focus-btn ${task.type === 'priority' ? 'primary' : 'secondary'}`}
-                                                onClick={() => togglePriority(task.id)}
+                                                className={`hp-focus-btn ${task.priority === 'high' ? 'primary' : 'secondary'}`}
+                                                onClick={() => togglePriority(task.assignment_id)}
                                             >
-                                                {task.type === 'priority' ? 'Focused' : 'Focus'}
+                                                {task.priority === 'high' ? 'Focused' : 'Focus'}
                                             </button>
                                             <button className="hp-more-btn">⋮</button>
                                         </div>

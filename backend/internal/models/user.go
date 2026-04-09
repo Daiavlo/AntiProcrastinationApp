@@ -20,3 +20,14 @@ type LoginRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
+
+type UserProfileResponse struct {
+	UserID   int    `json:"user_id"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Avatar   string `json:"avatar"`
+	Banner   string `json:"banner"`
+	Bio      string `json:"bio"`
+	Pronouns string `json:"pronouns"`
+	Points   int    `json:"points"`
+}

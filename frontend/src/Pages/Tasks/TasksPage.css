@@ -86,8 +86,16 @@
     border-color: var(--accent);
 }
 
-.task-item-row.done {
-    opacity: 0.6;
+.task-item-row.done,
+.task-item-row.completed {
+    opacity: 0.7;
+    border-color: var(--success);
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.1);
+}
+
+.task-item-row.in_progress {
+    border-color: var(--warning);
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.15);
 }
 
 .priority-indicator {
@@ -97,6 +105,10 @@
 .priority-indicator.high { background-color: var(--accent); }
 .priority-indicator.medium { background-color: var(--warning); }
 .priority-indicator.low { background-color: var(--info); }
+
+/* Status overrides for indicator bar */
+.priority-indicator.completed { background-color: var(--success) !important; }
+.priority-indicator.in_progress { background-color: var(--warning) !important; }
 
 .task-row-main {
     flex: 1;
@@ -159,5 +171,111 @@
     border: none;
     font-size: 20px;
     color: var(--text-muted);
+    cursor: pointer;
+}
+
+/* --- Task Modal --- */
+.task-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.task-modal-content {
+    background: var(--bg-primary);
+    padding: 30px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.task-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.task-modal-header h2 {
+    margin: 0;
+    font-size: 24px;
+    color: var(--text-primary);
+}
+
+.close-modal-btn {
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: var(--text-muted);
+}
+
+.task-modal-form .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.task-modal-form .form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.task-modal-form .half {
+    flex: 1;
+}
+
+.task-modal-form label {
+    margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.task-modal-form input,
+.task-modal-form textarea,
+.task-modal-form select {
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.task-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.cancel-btn {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.submit-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
     cursor: pointer;
 }

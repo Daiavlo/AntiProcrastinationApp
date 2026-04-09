@@ -340,3 +340,19 @@
 .hp-fab:hover {
     transform: scale(1.1);
 }
+
+.hp-task-date-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.hp-task-due {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    background: rgba(204, 41, 41, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+}

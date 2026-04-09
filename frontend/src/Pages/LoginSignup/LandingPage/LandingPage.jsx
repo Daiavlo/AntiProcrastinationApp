@@ -41,7 +41,7 @@ const LandingPage = () => {
     }, []);
 
     return (
-        <div className="landing-page">
+        <div className="landing-page" data-theme="light">
             {/* ── NAVBAR ── */}
             <header className={`lp-header ${scrollActive ? "active" : ""}`}>
                 <nav className="lp-navbar">

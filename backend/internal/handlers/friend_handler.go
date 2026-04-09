@@ -63,3 +63,43 @@ func (h *FriendHandler) GetFriends(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(conns)
 }
+
+func (h *FriendHandler) SearchUsers(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query().Get("q")
+	if query == "" {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode([]models.UserProfileResponse{})
+		return
+	}
+
+	rows, err := h.DB.Query(`
+		SELECT u.user_id, u.username, p.avatar_url 
+		FROM "User" u
+		LEFT JOIN User_profile p ON u.user_id = p.user_id
+		WHERE u.username ILIKE '%' || $1 || '%'
+		LIMIT 20
+	`, query)
+
+	if err != nil {
+		http.Error(w, "Failed to search users", http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	var users []models.UserProfileResponse
+	for rows.Next() {
+		var u models.UserProfileResponse
+		var avatarNull sql.NullString
+		if err := rows.Scan(&u.UserID, &u.Username, &avatarNull); err == nil {
+			u.Avatar = avatarNull.String
+			if u.Avatar == "" {
+				u.Avatar = "https://api.dicebear.com/7.x/bottts/svg?seed=" + u.Username
+			}
+			users = append(users, u)
+		}
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(users)
+}
+

@@ -11,6 +11,7 @@ type Task struct {
 	Priority     string    `db:"priority"      json:"priority"`
 	Status       string    `db:"status"        json:"status"`
 	CreatedAt    time.Time `db:"created_at"    json:"created_at"`
+	UpdatedAt    time.Time `db:"updated_at"    json:"updated_at"`
 }
 
 type CreateTaskRequest struct {

@@ -57,9 +57,9 @@ const FriendsPage = () => {
         fetch(`http://localhost:8080/api/users/search?q=${query}`, {
             headers: { "Authorization": `Bearer ${token}` }
         })
-        .then(res => res.json())
-        .then(data => setSearchResults(data || []))
-        .catch(console.error);
+            .then(res => res.json())
+            .then(data => setSearchResults(data || []))
+            .catch(console.error);
     };
 
     const navigateToProfile = (id) => {

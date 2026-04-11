@@ -6,6 +6,7 @@ import HomePage from './Pages/HomePage/HomePage';
 import ProfilePage from './Pages/Profile/ProfilePage';
 import TasksPage from './Pages/Tasks/TasksPage';
 import FriendsPage from './Pages/Friends/FriendsPage';
+import AddFriendsPage from './Pages/Friends/AddFriendsPage';
 import SettingsPage from './Pages/Settings/SettingsPage';
 import AlienProfilePage from './Pages/Profile/AlienProfilePage';
 
@@ -21,6 +22,7 @@ function App() {
           <Route path="/profile/:id" element={<AlienProfilePage />} />
           <Route path="/tasks" element={<TasksPage />} />
           <Route path="/friends" element={<FriendsPage />} />
+          <Route path="/friends/add" element={<AddFriendsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Routes>
       </Router>

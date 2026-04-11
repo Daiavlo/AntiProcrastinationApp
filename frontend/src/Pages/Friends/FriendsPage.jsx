@@ -1,148 +1,265 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../Components/Sidebar/Sidebar";
+import ComparePointsModal from "../Profile/ComparePointsModal";
 import "./FriendsPage.css";
+
+const API = "http://localhost:8080/api";
+
+const authHeaders = () => ({
+    "Authorization": `Bearer ${sessionStorage.getItem("token")}`,
+    "Content-Type": "application/json",
+});
 
 const FriendsPage = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [friends, setFriends] = useState([]);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [searchResults, setSearchResults] = useState([]);
+    const [pendingRequests, setPendingRequests] = useState([]);
+    const [actionLoading, setActionLoading] = useState({});   // { userId: true }
+    const [compareTarget, setCompareTarget] = useState(null); // friend to compare with
+
+    // ─── Load profile, friends and pending requests ───────────────────────
+    // Drop-in replacement for the two loader functions in FriendsPage.jsx.
+    // Wrap every fetch with a res.ok guard so a non-JSON error page
+    // (404, 500, plain text) never reaches JSON.parse.
+
+    const loadFriends = useCallback(async () => {
+        const res = await fetch(`${API}/friends`, { headers: authHeaders() });
+        if (!res.ok) { setFriends([]); return; }
+        const data = await res.json();
+
+        const enriched = await Promise.all(
+            (data || []).map(async (c) => {
+                const friendId = c.user_id !== user?.user_id ? c.user_id : c.friend_id;
+                try {
+                    const pr = await fetch(`${API}/profile/${friendId}`, { headers: authHeaders() });
+                    if (!pr.ok) throw new Error();
+                    const pd = await pr.json();
+                    return {
+                        id: friendId,
+                        name: pd.username || `User #${friendId}`,
+                        avatar: pd.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${friendId}`,
+                        points: pd.points || 0,
+                    };
+                } catch {
+                    return {
+                        id: friendId,
+                        name: `User #${friendId}`,
+                        avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${friendId}`,
+                        points: 0,
+                    };
+                }
+            })
+        );
+        setFriends(enriched);
+    }, [user]);
+
+    const loadPending = useCallback(async () => {
+        const res = await fetch(`${API}/friends/pending`, { headers: authHeaders() });
+        if (!res.ok) { setPendingRequests([]); return; }
+        const data = await res.json();
+        setPendingRequests(data || []);
+    }, []);
+
+
 
     useEffect(() => {
         const token = sessionStorage.getItem("token");
-        if (!token) {
-            window.location.href = "/auth";
-            return;
-        }
+        if (!token) { window.location.href = "/auth"; return; }
 
-        const headers = { "Authorization": `Bearer ${token}` };
-
-        // Fetch Profile
-        fetch("http://localhost:8080/api/profile", { headers })
-            .then(res => res.json())
+        fetch(`${API}/profile`, { headers: authHeaders() })
+            .then(r => r.json())
             .then(data => setUser(data))
-            .catch(() => window.location.href = "/auth");
-
-        // Fetch Friends
-        fetch("http://localhost:8080/api/friends", { headers })
-            .then(res => res.json())
-            .then(data => {
-                const mappedFriends = (data || []).map(f => {
-                    const isOther = f.user_id !== user?.user_id;
-                    const friendId = isOther ? f.user_id : f.friend_id;
-                    return {
-                        id: friendId,
-                        name: `User #${friendId}`, // Ideally fetch names in a joined query
-                        avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${friendId}`,
-                        points: 0
-                    };
-                });
-                setFriends(mappedFriends);
-            })
-            .catch(console.error);
-
+            .catch(() => (window.location.href = "/auth"));
     }, []);
 
-    const handleSearch = (e) => {
-        const query = e.target.value;
-        setSearchQuery(query);
-        if (query.length < 2) {
-            setSearchResults([]);
-            return;
+    useEffect(() => {
+        if (!user) return;
+        loadFriends();
+        loadPending();
+    }, [user, loadFriends, loadPending]);
+
+
+    // ─── Send friend request ──────────────────────────────────────────────
+    const sendRequest = async (targetId) => {
+        setActionLoading(prev => ({ ...prev, [targetId]: true }));
+        try {
+            await fetch(`${API}/friends/add`, {
+                method: "POST",
+                headers: authHeaders(),
+                body: JSON.stringify({ friend_id: targetId }),
+            });
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setActionLoading(prev => ({ ...prev, [targetId]: false }));
         }
-
-        const token = sessionStorage.getItem("token");
-        fetch(`http://localhost:8080/api/users/search?q=${query}`, {
-            headers: { "Authorization": `Bearer ${token}` }
-        })
-            .then(res => res.json())
-            .then(data => setSearchResults(data || []))
-            .catch(console.error);
     };
 
-    const navigateToProfile = (id) => {
-        navigate(`/profile/${id}`);
+    // ─── Accept friend request ────────────────────────────────────────────
+    const acceptRequest = async (targetId) => {
+        setActionLoading(prev => ({ ...prev, [targetId]: true }));
+        try {
+            await fetch(`${API}/friends/accept`, {
+                method: "POST",
+                headers: authHeaders(),
+                body: JSON.stringify({ friend_id: targetId }),
+            });
+            // Remove from pending list and reload friends
+            setPendingRequests(prev => prev.filter(u => u.user_id !== targetId));
+            await loadFriends();
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setActionLoading(prev => ({ ...prev, [targetId]: false }));
+        }
     };
 
-    if (!user) return null;
-
+    // ─── Helpers ──────────────────────────────────────────────────────────
     const handleLogout = () => {
         sessionStorage.removeItem("token");
         window.location.href = "/auth";
     };
+
+    const navigateToProfile = (id) => navigate(`/profile/${id}`);
+
+    if (!user) return null;
 
     return (
         <div className="hp-layout">
             <Sidebar user={user} handleLogout={handleLogout} />
             <main className="hp-main-content">
                 <div className="friends-page-container">
+
+                    {/* ── Header ── */}
                     <header className="friends-header">
                         <h1>Infinity Circle</h1>
-                        <div className="search-bar-wrap">
-                            <input
-                                type="text"
-                                placeholder="Find users to add..."
-                                value={searchQuery}
-                                onChange={handleSearch}
-                                className="friend-search-input"
-                            />
-                            <button className="search-icon-btn">🔍</button>
-                        </div>
+                        <button
+                            className="add-friends-cta-btn"
+                            onClick={() => navigate("/friends/add")}
+                        >
+                            + Add Friends
+                        </button>
                     </header>
 
                     <div className="friends-grid-view">
-                        <section className="friends-section-main">
-                            <h2>My Friends</h2>
-                            <div className="friends-cards">
-                                {friends.map((friend) => (
-                                    <div key={friend.id} className="friend-compact-card">
-                                        <div className="friend-card-top" onClick={() => navigateToProfile(friend.id)} style={{ cursor: 'pointer' }}>
-                                            <img src={friend.avatar} alt={friend.name} className="friend-card-avatar" />
-                                            <div className="friend-card-info">
-                                                <h3 className="friend-card-name">{friend.name}</h3>
-                                                <span className="friend-card-status">Focus Partner</span>
-                                            </div>
-                                        </div>
-                                        <div className="friend-card-stats">
-                                            <div className="stat-mini">
-                                                <span className="stat-mini-val">{friend.points}</span>
-                                                <span className="stat-mini-label">Points</span>
-                                            </div>
-                                        </div>
-                                        <div className="friend-card-actions">
-                                            <button className="compare-btn" onClick={() => navigateToProfile(friend.id)}>Compare Points</button>
-                                            <button className="view-profile-btn" onClick={() => navigateToProfile(friend.id)}>View Profile</button>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </section>
 
-                        <section className="suggested-friends-section">
-                            <h2>Search Results</h2>
-                            <div className="suggested-list">
-                                {searchResults.length > 0 ? (
-                                    searchResults.map(result => (
-                                        <div key={result.user_id} className="suggested-friend-item" onClick={() => navigateToProfile(result.user_id)} style={{ cursor: 'pointer' }}>
-                                            <img src={result.avatar} alt={result.username} className="suggested-avatar" />
-                                            <div className="suggested-info">
-                                                <span className="suggested-name">{result.username}</span>
-                                                <button className="add-friend-mini">View</button>
+                        {/* ── Left column ── */}
+                        <div className="friends-left-col">
+
+                            {/* Pending requests */}
+                            {pendingRequests.length > 0 && (
+                                <section className="pending-section">
+                                    <h2>
+                                        Friend Requests
+                                        <span className="pending-badge">{pendingRequests.length}</span>
+                                    </h2>
+                                    <div className="pending-list">
+                                        {pendingRequests.map(req => (
+                                            <div key={req.user_id} className="pending-item">
+                                                <img
+                                                    src={req.avatar}
+                                                    alt={req.username}
+                                                    className="pending-avatar"
+                                                    onClick={() => navigateToProfile(req.user_id)}
+                                                    style={{ cursor: "pointer" }}
+                                                />
+                                                <div className="pending-info">
+                                                    <span
+                                                        className="pending-name"
+                                                        onClick={() => navigateToProfile(req.user_id)}
+                                                        style={{ cursor: "pointer" }}
+                                                    >
+                                                        {req.username}
+                                                    </span>
+                                                    <span className="pending-sub">wants to be your Focus Partner</span>
+                                                </div>
+                                                <div className="pending-actions">
+                                                    <button
+                                                        className="accept-btn"
+                                                        disabled={actionLoading[req.user_id]}
+                                                        onClick={() => acceptRequest(req.user_id)}
+                                                    >
+                                                        {actionLoading[req.user_id] ? "..." : "Accept"}
+                                                    </button>
+                                                    <button
+                                                        className="decline-btn"
+                                                        onClick={() =>
+                                                            setPendingRequests(prev =>
+                                                                prev.filter(u => u.user_id !== req.user_id)
+                                                            )
+                                                        }
+                                                    >
+                                                        Decline
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </section>
+                            )}
+
+                            {/* My Friends */}
+                            <section className="friends-section-main">
+                                <h2>My Friends</h2>
+                                <div className="friends-cards">
+                                    {friends.length === 0 && (
+                                        <p className="empty-state">No friends yet — search for someone to add!</p>
+                                    )}
+                                    {friends.map((friend) => (
+                                        <div
+                                            key={friend.id}
+                                            className="friend-compact-card"
+                                            onClick={() => navigateToProfile(friend.id)}
+                                            style={{ cursor: "pointer" }}
+                                        >
+                                            <div className="friend-card-top">
+                                                <img src={friend.avatar} alt={friend.name} className="friend-card-avatar" />
+                                                <div className="friend-card-info">
+                                                    <h3 className="friend-card-name">{friend.name}</h3>
+                                                    <span className="friend-card-status">Focus Partner</span>
+                                                </div>
+                                            </div>
+                                            <div className="friend-card-stats">
+                                                <div className="stat-mini">
+                                                    <span className="stat-mini-val">{friend.points}</span>
+                                                    <span className="stat-mini-label">Points</span>
+                                                </div>
+                                            </div>
+                                            <div className="friend-card-actions">
+                                                <button
+                                                    className="compare-btn"
+                                                    onClick={(e) => { e.stopPropagation(); setCompareTarget(friend); }}
+                                                >
+                                                    Compare Points
+                                                </button>
+                                                <button
+                                                    className="view-profile-btn"
+                                                    onClick={(e) => { e.stopPropagation(); navigateToProfile(friend.id); }}
+                                                >
+                                                    View Profile
+                                                </button>
                                             </div>
                                         </div>
-                                    ))
-                                ) : (
-                                    <div className="no-suggestions">
-                                        <p>{searchQuery ? "No users found." : "Search for a username to add friends!"}</p>
-                                    </div>
-                                )}
-                            </div>
-                        </section>
+                                    ))}
+                                </div>
+                            </section>
+                        </div>
+
+
+
                     </div>
                 </div>
             </main>
+
+            {compareTarget && (
+                <ComparePointsModal
+                    onClose={() => setCompareTarget(null)}
+                    myUser={user}
+                    alienUser={compareTarget}
+                />
+            )}
         </div>
     );
 };

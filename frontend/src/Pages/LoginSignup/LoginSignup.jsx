@@ -144,6 +144,9 @@ const LoginSignup = () => {
                 {/* ── SIGN IN FORM ── */}
                 <div className="form-container sign-in-container">
                     <form onSubmit={handleSignIn}>
+                        <div style={{ color: "red", fontSize: "10px", textAlign: "center", marginBottom: "10px" }}>
+                            DEBUG API: {API_URL}
+                        </div>
                         <h1>Sign In</h1>
 
                         <div className="input-group">

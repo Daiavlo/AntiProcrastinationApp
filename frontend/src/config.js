@@ -1,17 +1,5 @@
-const getApiUrl = () => {
-    // If the environment variable is explicitly set, use it.
-    if (process.env.REACT_APP_API_URL) {
-        return process.env.REACT_APP_API_URL;
-    }
-    
-    // In production (Cloudflare), we define the base API URL.
-    // Adjust this to "https://api.antiprocrastination.xyz" or "https://antiprocrastination.xyz/api" depending on your Cloudflare routing.
-    if (process.env.NODE_ENV === 'production' || window.location.hostname !== 'localhost') {
-        return 'https://antiprocrastination.xyz/api'; 
-    }
-    
-    // Default fallback for local development
-    return 'http://localhost:8080/api';
-};
-
-export const API_URL = getApiUrl();
+// The API base URL. Set REACT_APP_API_URL in your .env for local dev.
+// For production (Cloudflare Pages), set this env var in your Cloudflare Pages dashboard.
+// Example local:      REACT_APP_API_URL=http://localhost:8080/api
+// Example production: REACT_APP_API_URL=https://antiprocrastination.xyz/api
+export const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api';

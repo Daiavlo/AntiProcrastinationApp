@@ -11,6 +11,7 @@ const AlienProfilePage = () => {
     const [myUser, setMyUser] = useState(null);
     const [alienUser, setAlienUser] = useState(null);
     const [showCompareModal, setShowCompareModal] = useState(false);
+    const [isFriend, setIsFriend] = useState(false);
 
     useEffect(() => {
         const token = sessionStorage.getItem("token");
@@ -39,6 +40,18 @@ const AlienProfilePage = () => {
                 navigate("/home"); 
             });
 
+        // Check friendship status
+        fetch("http://localhost:8080/api/friends", { headers })
+            .then(res => res.ok ? res.json() : [])
+            .then(list => {
+                const numId = Number(id);
+                const found = (list || []).some(
+                    c => c.user_id === numId || c.friend_id === numId
+                );
+                setIsFriend(found);
+            })
+            .catch(() => setIsFriend(false));
+
     }, [id, navigate]);
 
     if (!myUser || !alienUser) return null;
@@ -55,12 +68,6 @@ const AlienProfilePage = () => {
                 <div className="profile-container">
                     {/* Banner */}
                     <div className="profile-banner" style={{ background: alienUser.banner ? `url(${alienUser.banner}) center/cover` : 'linear-gradient(135deg, var(--accent), #a21a1a)' }}>
-                        <button 
-                            className="compare-points-hero-btn" 
-                            onClick={() => setShowCompareModal(true)}
-                        >
-                            ⚔️ Compare Points
-                        </button>
                     </div>
 
                     {/* Profile Info Header */}
@@ -85,6 +92,18 @@ const AlienProfilePage = () => {
                             <span className="stat-label">Points</span>
                         </div>
                     </div>
+
+                    {/* Compare Points — friends only */}
+                    {isFriend && (
+                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+                            <button
+                                className="compare-points-hero-btn"
+                                onClick={() => setShowCompareModal(true)}
+                            >
+                                ⚔️ Compare Points
+                            </button>
+                        </div>
+                    )}
                 </div>
 
                 {showCompareModal && (

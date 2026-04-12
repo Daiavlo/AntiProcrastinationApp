@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../Components/Sidebar/Sidebar";
 import "./HomePage.css";
+
+const API = "http://localhost:8080/api";
+const authHeaders = () => ({ "Authorization": `Bearer ${sessionStorage.getItem("token")}` });
 
 const HomePage = () => {
     const navigate = useNavigate();
@@ -19,24 +22,47 @@ const HomePage = () => {
         const headers = { "Authorization": `Bearer ${token}` };
 
         // Fetch Profile
-        fetch("http://localhost:8080/api/profile", { headers })
+        fetch(`${API}/profile`, { headers: authHeaders() })
             .then(res => res.json())
-            .then(data => setUser(data))
+            .then(data => { setUser(data); loadFriends(data); })
             .catch(() => navigate("/auth"));
 
         // Fetch Tasks
-        fetch("http://localhost:8080/api/tasks", { headers })
+        fetch(`${API}/tasks`, { headers: authHeaders() })
             .then(res => res.json())
             .then(data => setTasks(data || []))
             .catch(console.error);
 
-        // Fetch Friends
-        fetch("http://localhost:8080/api/friends", { headers })
-            .then(res => res.json())
-            .then(data => setFriends(data || []))
-            .catch(console.error);
-
     }, [navigate]);
+
+    const loadFriends = useCallback(async (currentUser) => {
+        if (!currentUser) return;
+        const res = await fetch(`${API}/friends`, { headers: authHeaders() });
+        if (!res.ok) { setFriends([]); return; }
+        const data = await res.json();
+        const enriched = await Promise.all(
+            (data || []).map(async (c) => {
+                const friendId = c.user_id !== currentUser.user_id ? c.user_id : c.friend_id;
+                try {
+                    const pr = await fetch(`${API}/profile/${friendId}`, { headers: authHeaders() });
+                    if (!pr.ok) throw new Error();
+                    const pd = await pr.json();
+                    return {
+                        id: friendId,
+                        name: pd.username || `User #${friendId}`,
+                        avatar: pd.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${friendId}`,
+                    };
+                } catch {
+                    return {
+                        id: friendId,
+                        name: `User #${friendId}`,
+                        avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${friendId}`,
+                    };
+                }
+            })
+        );
+        setFriends(enriched);
+    }, []);
 
     const handleLogout = () => {
         sessionStorage.removeItem("token");
@@ -82,23 +108,23 @@ const HomePage = () => {
                         <section className="hp-section hp-friends-section">
                             <div className="hp-section-header">
                                 <h2>Friends</h2>
-                                <button className="hp-text-btn">View All</button>
+                                <button className="hp-text-btn" onClick={() => navigate("/friends")}>View All</button>
                             </div>
                             <div className="hp-friends-list">
                                 {friends.map((friend) => (
                                     <div 
-                                        key={friend.user_id} 
+                                        key={friend.id} 
                                         className="hp-friend-item" 
-                                        onClick={() => navigate(`/profile/${friend.friend_id || friend.user_id}`)}
+                                        onClick={() => navigate(`/profile/${friend.id}`)}
                                         style={{ cursor: 'pointer' }}
                                     >
                                         <div className="hp-friend-avatar-wrap">
-                                            <img src={`https://api.dicebear.com/7.x/bottts/svg?seed=${friend.friend_id || friend.user_id}`} alt="friend" className="hp-friend-avatar" />
+                                            <img src={friend.avatar} alt={friend.name} className="hp-friend-avatar" />
                                         </div>
-                                        <span className="hp-friend-name">User #{friend.friend_id || friend.user_id}</span>
+                                        <span className="hp-friend-name">{friend.name}</span>
                                     </div>
                                 ))}
-                                <div className="hp-friend-item add-friend">
+                                <div className="hp-friend-item add-friend" onClick={() => navigate("/friends/add")} style={{ cursor: 'pointer' }}>
                                     <div className="hp-add-avatar">+</div>
                                     <span className="hp-friend-name">Add Friend</span>
                                 </div>
@@ -146,7 +172,7 @@ const HomePage = () => {
                 </div>
 
                 {/* FAB */}
-                <button className="hp-fab">+</button>
+                <button className="hp-fab" onClick={() => navigate("/tasks")}>+</button>
             </main>
         </div>
     );

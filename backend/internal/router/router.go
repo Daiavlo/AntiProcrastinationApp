@@ -6,14 +6,12 @@ import (
 
 	"github.com/daiavlo/antiprocrastination/backend/internal/handlers"
 	appMiddleware "github.com/daiavlo/antiprocrastination/backend/internal/middleware"
-
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
 
 func SetUp(db *sql.DB) http.Handler {
 	r := chi.NewRouter()
-
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(corsMiddleware)
@@ -25,7 +23,6 @@ func SetUp(db *sql.DB) http.Handler {
 	r.Post("/api/register", authH.Register)
 	r.Post("/api/login", authH.Login)
 
-	// Serve the uploads directory statically
 	r.Handle("/uploads/*", http.StripPrefix("/uploads/", http.FileServer(http.Dir("./uploads"))))
 
 	r.Group(func(r chi.Router) {
@@ -42,6 +39,8 @@ func SetUp(db *sql.DB) http.Handler {
 
 		r.Get("/api/friends", friendH.GetFriends)
 		r.Post("/api/friends/add", friendH.SendRequest)
+		r.Post("/api/friends/accept", friendH.AcceptRequest)      // ← new
+		r.Get("/api/friends/pending", friendH.GetPendingRequests) // ← new
 		r.Get("/api/users/search", friendH.SearchUsers)
 	})
 

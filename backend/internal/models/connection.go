@@ -18,3 +18,10 @@ type FriendRequest struct {
 type AcceptFriendRequest struct {
 	FriendID int64 `json:"friend_id"`
 }
+
+type UserSearchResult struct {
+	UserID           int64  `json:"user_id"`
+	Username         string `json:"username"`
+	Avatar           string `json:"avatar"`
+	ConnectionStatus string `json:"connection_status"` // "none" | "sent" | "received" | "accepted"
+}

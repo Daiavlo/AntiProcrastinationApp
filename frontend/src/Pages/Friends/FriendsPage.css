@@ -1,3 +1,4 @@
+/* ── Layout ─────────────────────────────────────────────── */
 .friends-page-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -17,55 +18,155 @@
     margin: 0;
 }
 
-.search-bar-wrap {
-    display: flex;
-    align-items: center;
-    background-color: var(--bg-tertiary);
-    border: 1px solid var(--border);
+/* ── Add Friends CTA button ─────────────────────────────── */
+.add-friends-cta-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 12px 24px;
     border-radius: 12px;
-    padding: 0 15px;
-    width: 350px;
-    transition: 0.2s;
-}
-
-.search-bar-wrap:focus-within {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 4px rgba(204, 41, 41, 0.1);
-}
-
-.friend-search-input {
-    flex: 1;
-    background: none;
-    border: none;
-    padding: 12px 10px;
-    color: var(--text-primary);
-    font-weight: 600;
-}
-
-.friend-search-input:focus {
-    outline: none;
-}
-
-.search-icon-btn {
-    background: none;
-    border: none;
+    font-size: 14px;
+    font-weight: 700;
     cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+    white-space: nowrap;
+    font-family: inherit;
 }
 
-/* Grid View */
+.add-friends-cta-btn:hover {
+    opacity: 0.88;
+    transform: scale(1.03);
+}
+
+/* ── Grid ───────────────────────────────────────────────── */
 .friends-grid-view {
-    display: grid;
-    grid-template-columns: 1fr 300px;
+    display: flex;
+    flex-direction: column;
     gap: 40px;
 }
 
-.friends-section-main h2, .suggested-friends-section h2 {
+.friends-left-col {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.friends-section-main h2,
+.suggested-friends-section h2,
+.pending-section h2 {
     font-size: 20px;
     font-weight: 800;
     margin-bottom: 25px;
     color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
+/* ── Pending requests ───────────────────────────────────── */
+.pending-badge {
+    background-color: var(--accent);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pending-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.pending-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px 20px;
+    transition: 0.2s;
+}
+
+.pending-item:hover {
+    border-color: var(--accent);
+}
+
+.pending-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: var(--bg-tertiary);
+    flex-shrink: 0;
+}
+
+.pending-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.pending-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.pending-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.pending-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.accept-btn {
+    background-color: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.accept-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.decline-btn {
+    background-color: var(--bg-tertiary);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.decline-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* ── Friend cards ───────────────────────────────────────── */
 .friends-cards {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -170,52 +271,9 @@
     cursor: pointer;
 }
 
-/* Suggested */
-.suggested-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.suggested-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background-color: var(--bg-tertiary);
-    padding: 15px;
-    border-radius: 15px;
-}
-
-.suggested-avatar {
-    width: 44px;
-    height: 44px;
-    background-color: var(--border);
-    border-radius: 50%;
-}
-
-.suggested-info {
-    flex: 1;
-}
-
-.suggested-name {
-    display: block;
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--text-primary);
-}
-
-.suggested-mutual {
-    font-size: 11px;
+/* ── Misc ───────────────────────────────────────────────── */
+.empty-state {
     color: var(--text-muted);
-}
-
-.add-friend-btn-small {
-    background-color: var(--accent);
-    color: white;
-    border: none;
-    padding: 6px 14px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
 }

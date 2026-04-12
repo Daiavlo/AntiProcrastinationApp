@@ -36,8 +36,8 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var UserID int64
-	// Use quoted "User" as it is case-sensitive in the schema
-	err = h.DB.QueryRow(`INSERT INTO "User" (username, password_hash, email) VALUES ($1, $2, $3) RETURNING user_id`, req.Username, string(hash), req.Email).Scan(&UserID)
+	// Use lowercase 'users' table
+	err = h.DB.QueryRow(`INSERT INTO users (username, password_hash, email) VALUES ($1, $2, $3) RETURNING user_id`, req.Username, string(hash), req.Email).Scan(&UserID)
 	if err != nil {
 		log.Printf("Registration error: %v", err)
 		http.Error(w, "server error", http.StatusInternalServerError)
@@ -56,8 +56,8 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var user models.User
-	// Use quoted "User" Table
-	err := h.DB.QueryRow(`SELECT user_id, password_hash FROM "User" WHERE email = $1`, req.Email).Scan(&user.UserID, &user.PasswordHash)
+	// Use lowercase 'users' table
+	err := h.DB.QueryRow(`SELECT user_id, password_hash FROM users WHERE email = $1`, req.Email).Scan(&user.UserID, &user.PasswordHash)
 	if err != nil {
 		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
 		return
@@ -89,7 +89,7 @@ func (h *AuthHandler) GetProfile(w http.ResponseWriter, r *http.Request) {
 	var avatarNull, bannerNull, bioNull, pronounsNull sql.NullString
 	err := h.DB.QueryRow(`
 		SELECT u.username, u.email, p.avatar_url, p.banner_url, p.bio, p.pronouns 
-		FROM "User" u
+		FROM users u
 		LEFT JOIN User_profile p ON u.user_id = p.user_id
 		WHERE u.user_id = $1
 	`, userID).Scan(&profile.Username, &profile.Email, &avatarNull, &bannerNull, &bioNull, &pronounsNull)
@@ -137,7 +137,7 @@ func (h *AuthHandler) GetAlienProfile(w http.ResponseWriter, r *http.Request) {
 	var avatarNull, bannerNull, bioNull, pronounsNull sql.NullString
 	err := h.DB.QueryRow(`
 		SELECT u.user_id, u.username, u.email, p.avatar_url, p.banner_url, p.bio, p.pronouns 
-		FROM "User" u
+		FROM users u
 		LEFT JOIN User_profile p ON u.user_id = p.user_id
 		WHERE u.user_id = $1
 	`, alienIDStr).Scan(&profile.UserID, &profile.Username, &profile.Email, &avatarNull, &bannerNull, &bioNull, &pronounsNull)

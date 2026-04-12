@@ -86,7 +86,7 @@ func (h *FriendHandler) GetPendingRequests(w http.ResponseWriter, r *http.Reques
 	rows, err := h.DB.Query(`
 		SELECT u.user_id, u.username, COALESCE(p.avatar_url, '')
 		FROM Connection c
-		JOIN "User" u ON u.user_id = c.initiated_by
+		JOIN users u ON u.user_id = c.initiated_by
 		LEFT JOIN User_profile p ON p.user_id = c.initiated_by
 		WHERE (c.user_id = $1 OR c.friend_id = $1)
 		  AND c.status = 'pending'
@@ -166,7 +166,7 @@ func (h *FriendHandler) SearchUsers(w http.ResponseWriter, r *http.Request) {
 				WHEN c.initiated_by = $2     THEN 'sent'
 				ELSE                              'received'
 			END AS connection_status
-		FROM "User" u
+		FROM users u
 		LEFT JOIN User_profile p ON u.user_id = p.user_id
 		LEFT JOIN Connection c ON (
 			(c.user_id   = u.user_id AND c.friend_id = $2) OR

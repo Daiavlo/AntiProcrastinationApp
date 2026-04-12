@@ -16,13 +16,13 @@ CREATE DATABASE "AntiProcrastinationApp"
 
 
 
-CREATE TABLE "User"(
-    User_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    Username VARCHAR(255) NOT NULL UNIQUE,
-    Password_hash VARCHAR(255) NOT NULL,
-    Email VARCHAR(255) NOT NULL UNIQUE,
-    Created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    Updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE users(
+    user_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE User_profile (
@@ -37,8 +37,8 @@ CREATE TABLE User_profile (
     Updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT FK_USER
-        FOREIGN KEY(User_id)
-        REFERENCES "User"(User_id)
+        FOREIGN KEY(user_id)
+        REFERENCES users(user_id)
         ON DELETE CASCADE
 );
 
@@ -55,18 +55,18 @@ CREATE TABLE Connection (
 
 
     CONSTRAINT FK_Connection_User
-        FOREIGN KEY (User_id)
-        REFERENCES "User"(User_id)
+        FOREIGN KEY (user_id)
+        REFERENCES users(user_id)
         ON DELETE CASCADE,
 
     CONSTRAINT FK_Connection_Friend
-        FOREIGN KEY (Friend_id)
-        REFERENCES "User"(User_id)
+        FOREIGN KEY (friend_id)
+        REFERENCES users(user_id)
         ON DELETE CASCADE,
 
     CONSTRAINT FK_Connection_Initiated
-        FOREIGN KEY (Initiated_by)
-        REFERENCES "User"(User_id)
+        FOREIGN KEY (initiated_by)
+        REFERENCES users(user_id)
         ON DELETE CASCADE,
 
     CONSTRAINT CHK_Order CHECK (User_id < Friend_id),
@@ -93,8 +93,8 @@ CREATE TABLE Assignment(
 
 
     CONSTRAINT FK_Assignment_User
-        FOREIGN KEY (User_id)
-        REFERENCES "User"(User_id)
+        FOREIGN KEY (user_id)
+        REFERENCES users(user_id)
         ON DELETE CASCADE,
 
     CONSTRAINT CHK_Priority CHECK (Priority IN ('low', 'medium', 'high')),

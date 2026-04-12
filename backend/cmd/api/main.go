@@ -16,7 +16,7 @@ func main() {
 	// Load .env file (only needed in development). Tries current dir, then 'backend/.env' just in case it's run from project root.
 	if err := godotenv.Load(); err != nil {
 		if err2 := godotenv.Load("backend/.env"); err2 != nil {
-			log.Println("No .env file found, using system env")
+			log.Printf("Failed to load .env file. Error 1: %v | Error 2: %v. Using system env\n", err, err2)
 		}
 	}
 

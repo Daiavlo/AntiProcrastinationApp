@@ -1,10 +1,19 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import "./ComparePointsModal.css";
 import yutaVideo from "../../Components/Assets/Yuta.mp4";
+import danteVergilVideo from "../../Components/Assets/DanteVergil.mp4";
+
+const videoPool = [yutaVideo, danteVergilVideo];
 
 const ComparePointsModal = ({ onClose, myUser, alienUser }) => {
     const modalRef = useRef(null);
     const videoRef = useRef(null);
+
+    // Pick a random video once per modal open
+    const randomVideo = useMemo(
+        () => videoPool[Math.floor(Math.random() * videoPool.length)],
+        []
+    );
 
     // Calculate tug-of-war split
     // Formula: (MyPoints / (MyPoints + FriendPoints)) * 100
@@ -46,7 +55,7 @@ const ComparePointsModal = ({ onClose, myUser, alienUser }) => {
                 <video
                     ref={videoRef}
                     className="compare-bg-video"
-                    src={yutaVideo}
+                    src={randomVideo}
                     autoPlay
                     loop
                     playsInline

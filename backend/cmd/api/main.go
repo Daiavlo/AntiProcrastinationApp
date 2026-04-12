@@ -13,9 +13,11 @@ import (
 )
 
 func main() {
-	// Load .env file (only needed in development)
+	// Load .env file (only needed in development). Tries current dir, then 'backend/.env' just in case it's run from project root.
 	if err := godotenv.Load(); err != nil {
-		log.Println("No .env file found, using system env")
+		if err2 := godotenv.Load("backend/.env"); err2 != nil {
+			log.Println("No .env file found, using system env")
+		}
 	}
 
 	// Connect to PostgreSQL

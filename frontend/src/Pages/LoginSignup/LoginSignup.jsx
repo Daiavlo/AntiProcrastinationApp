@@ -4,6 +4,7 @@ import "./LoginSignup.css";
 import user_icon from "../../Components/Assets/person.png";
 import email_icon from "../../Components/Assets/email.png";
 import password_icon from "../../Components/Assets/password.png";
+import { API_URL } from "../../config";
 // no users import needed
 const LoginSignup = () => {
     const navigate = useNavigate();
@@ -34,7 +35,7 @@ const LoginSignup = () => {
         e.preventDefault();
         setSignInError("");
         try {
-            const response = await fetch("http://localhost:8080/api/login", {
+            const response = await fetch(`${API_URL}/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -66,7 +67,7 @@ const LoginSignup = () => {
         }
 
         try {
-            const response = await fetch("http://localhost:8080/api/register", {
+            const response = await fetch(`${API_URL}/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

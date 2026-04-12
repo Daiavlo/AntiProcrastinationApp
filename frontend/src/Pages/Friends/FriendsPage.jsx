@@ -4,7 +4,7 @@ import Sidebar from "../../Components/Sidebar/Sidebar";
 import ComparePointsModal from "../Profile/ComparePointsModal";
 import "./FriendsPage.css";
 
-const API = "http://localhost:8080/api";
+import { API_URL as API } from "../../config";
 
 const authHeaders = () => ({
     "Authorization": `Bearer ${sessionStorage.getItem("token")}`,

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../Components/Sidebar/Sidebar";
+import { API_URL } from "../../config";
 import "./TasksPage.css";
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -43,7 +44,7 @@ const TasksPage = () => {
     // ── data fetching ─────────────────────────────────────────────────────────
 
     const fetchTasks = (token) => {
-        fetch("http://localhost:8080/api/tasks", {
+        fetch(`${API_URL}/tasks`, {
             headers: { "Authorization": `Bearer ${token}` }
         })
         .then(res => res.json())
@@ -55,7 +56,7 @@ const TasksPage = () => {
         const token = sessionStorage.getItem("token");
         if (!token) { window.location.href = "/auth"; return; }
         const headers = { "Authorization": `Bearer ${token}` };
-        fetch("http://localhost:8080/api/profile", { headers })
+        fetch(`${API_URL}/profile`, { headers })
             .then(res => res.json())
             .then(data => setUser(data))
             .catch(() => (window.location.href = "/auth"));
@@ -94,7 +95,7 @@ const TasksPage = () => {
         setTasks(prev => prev.map(t => t.assignment_id === taskId ? { ...t, status: newStatus } : t));
         if (detailTask?.assignment_id === taskId) setDetailTask(prev => ({ ...prev, status: newStatus }));
         try {
-            const res = await fetch(`http://localhost:8080/api/tasks/${taskId}/status`, {
+            const res = await fetch(`${API_URL}/tasks/${taskId}/status`, {
                 method: "PUT",
                 headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
                 body: JSON.stringify({ status: newStatus })
@@ -117,7 +118,7 @@ const TasksPage = () => {
         try {
             let formattedDate = new Date().toISOString();
             if (newTask.due_date) formattedDate = new Date(newTask.due_date).toISOString();
-            const res = await fetch("http://localhost:8080/api/tasks", {
+            const res = await fetch(`${API_URL}/tasks`, {
                 method: "POST",
                 headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
                 body: JSON.stringify({ title: newTask.title, description: newTask.description, due_date: formattedDate, priority: newTask.priority, status: "pending" })

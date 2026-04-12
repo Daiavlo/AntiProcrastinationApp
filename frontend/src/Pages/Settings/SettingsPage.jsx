@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../Components/Sidebar/Sidebar";
 import { useTheme } from "../../context/ThemeContext";
+import { API_URL } from "../../config";
 import "./SettingsPage.css";
 
 const SettingsPage = () => {
@@ -14,7 +15,7 @@ const SettingsPage = () => {
             return;
         }
 
-        fetch("http://localhost:8080/api/profile", {
+        fetch(`${API_URL}/profile`, {
             headers: { "Authorization": `Bearer ${token}` }
         })
         .then(res => res.json())

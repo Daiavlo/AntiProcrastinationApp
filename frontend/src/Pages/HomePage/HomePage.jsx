@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "../../Components/Sidebar/Sidebar";
 import "./HomePage.css";
 
-const API = "http://localhost:8080/api";
+import { API_URL as API } from "../../config";
 const authHeaders = () => ({ "Authorization": `Bearer ${sessionStorage.getItem("token")}` });
 
 const HomePage = () => {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../Components/Sidebar/Sidebar";
+import { API_URL } from "../../config";
 import "./ProfilePage.css";
 
 const ProfilePage = () => {
@@ -15,7 +16,7 @@ const ProfilePage = () => {
             return;
         }
 
-        fetch("http://localhost:8080/api/profile", {
+        fetch(`${API_URL}/profile`, {
             headers: { "Authorization": `Bearer ${token}` }
         })
         .then(res => {
@@ -49,7 +50,7 @@ const ProfilePage = () => {
         formData.append(field, file);
 
         try {
-            const response = await fetch("http://localhost:8080/api/profile", {
+            const response = await fetch(`${API_URL}/profile`, {
                 method: "PUT",
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -81,7 +82,7 @@ const ProfilePage = () => {
         formData.append("pronouns", editPronouns);
 
         try {
-            const response = await fetch("http://localhost:8080/api/profile", {
+            const response = await fetch(`${API_URL}/profile`, {
                 method: "PUT",
                 headers: { "Authorization": `Bearer ${token}` },
                 body: formData

@@ -207,7 +207,11 @@ func (h *AuthHandler) UpdateProfile(w http.ResponseWriter, r *http.Request) {
 			return nil
 		}
 
-		urlPath := fmt.Sprintf("http://localhost:8080/uploads/%s", filename)
+		baseURL := os.Getenv("BASE_URL")
+		if baseURL == "" {
+			baseURL = "http://localhost:8080"
+		}
+		urlPath := fmt.Sprintf("%s/uploads/%s", baseURL, filename)
 		return &urlPath
 	}
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Sidebar from "../../Components/Sidebar/Sidebar";
 import ComparePointsModal from "./ComparePointsModal";
+import { API_URL } from "../../config";
 import "./ProfilePage.css";
 
 const AlienProfilePage = () => {
@@ -23,13 +24,13 @@ const AlienProfilePage = () => {
         const headers = { "Authorization": `Bearer ${token}` };
 
         // Fetch My Profile
-        fetch("http://localhost:8080/api/profile", { headers })
+        fetch(`${API_URL}/profile`, { headers })
             .then(res => res.json())
             .then(data => setMyUser(data))
             .catch(() => navigate("/auth"));
 
         // Fetch Alien Profile
-        fetch(`http://localhost:8080/api/profile/${id}`, { headers })
+        fetch(`${API_URL}/profile/${id}`, { headers })
             .then(res => {
                 if (!res.ok) throw new Error("User not found");
                 return res.json();
@@ -41,7 +42,7 @@ const AlienProfilePage = () => {
             });
 
         // Check friendship status
-        fetch("http://localhost:8080/api/friends", { headers })
+        fetch(`${API_URL}/friends`, { headers })
             .then(res => res.ok ? res.json() : [])
             .then(list => {
                 const numId = Number(id);

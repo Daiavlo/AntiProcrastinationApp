@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"github.com/daiavlo/antiprocrastination/backend/internal/repository"
 	"github.com/daiavlo/antiprocrastination/backend/internal/router"
@@ -13,10 +14,15 @@ import (
 )
 
 func main() {
-	// Load .env file (only needed in development). Tries current dir, then 'backend/.env' just in case it's run from project root.
+	// Try loading .env from a few common places
 	if err := godotenv.Load(); err != nil {
 		if err2 := godotenv.Load("backend/.env"); err2 != nil {
-			log.Printf("Failed to load .env file. Error 1: %v | Error 2: %v. Using system env\n", err, err2)
+			// As a last resort, try looking in the same directory as the executable itself
+			exePath, _ := os.Executable()
+			exeDir := filepath.Dir(exePath)
+			if err3 := godotenv.Load(filepath.Join(exeDir, ".env")); err3 != nil {
+				log.Printf("Failed to load .env file. Err1: %v | Err2: %v | Err3: %v. Using system env\n", err, err2, err3)
+			}
 		}
 	}
 

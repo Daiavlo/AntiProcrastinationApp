@@ -12,6 +12,9 @@ type Task struct {
 	Status       string    `db:"status"        json:"status"`
 	CreatedAt    time.Time `db:"created_at"    json:"created_at"`
 	UpdatedAt    time.Time `db:"updated_at"    json:"updated_at"`
+	ClassID      *int64    `db:"class_id"      json:"class_id"`
+	ClassName    *string   `db:"class_name"    json:"class_name"`
+	ClassColor   *string   `db:"class_color"   json:"class_color"`
 }
 
 type CreateTaskRequest struct {
@@ -20,4 +23,5 @@ type CreateTaskRequest struct {
 	DueDate     time.Time `json:"due_date"`
 	Priority    string    `json:"priority"`
 	Status      string    `json:"status"`
+	ClassID     *int64    `json:"class_id"`
 }

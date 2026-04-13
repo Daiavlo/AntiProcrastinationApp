@@ -19,8 +19,11 @@ func (h *TaskHandler) GetTasks(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value(middleware.UserIDKey).(int64)
 
 	rows, err := h.DB.Query(
-		`SELECT assignment_id, title, description, due_date, priority, status, created_at, updated_at
-         FROM Assignment WHERE user_id=$1 ORDER BY due_date ASC`,
+		`SELECT a.assignment_id, a.title, a.description, a.due_date, a.priority, a.status, a.created_at, a.updated_at,
+                c.class_id, c.name as class_name, c.color as class_color
+         FROM Assignment a
+         LEFT JOIN Class c ON a.class_id = c.class_id
+         WHERE a.user_id=$1 ORDER BY a.due_date ASC`,
 		userID,
 	)
 
@@ -32,7 +35,10 @@ func (h *TaskHandler) GetTasks(w http.ResponseWriter, r *http.Request) {
 	var tasks []models.Task
 	for rows.Next() {
 		var task models.Task
-		if err := rows.Scan(&task.AssignmentID, &task.Title, &task.Description, &task.DueDate, &task.Priority, &task.Status, &task.CreatedAt, &task.UpdatedAt); err != nil {
+		if err := rows.Scan(
+			&task.AssignmentID, &task.Title, &task.Description, &task.DueDate, &task.Priority, &task.Status, &task.CreatedAt, &task.UpdatedAt,
+			&task.ClassID, &task.ClassName, &task.ClassColor,
+		); err != nil {
 			http.Error(w, "Failed to fetch tasks", http.StatusInternalServerError)
 			return
 		}
@@ -52,9 +58,9 @@ func (h *TaskHandler) CreateTask(w http.ResponseWriter, r *http.Request) {
 
 	var id int64
 	err := h.DB.QueryRow(
-		`INSERT INTO Assignment(user_id,title,description,due_date,priority,status)
-         VALUES($1,$2,$3,$4,$5,'pending') RETURNING assignment_id`,
-		userID, req.Title, req.Description, req.DueDate, req.Priority,
+		`INSERT INTO Assignment(user_id,title,description,due_date,priority,status,class_id)
+         VALUES($1,$2,$3,$4,$5,'pending',$6) RETURNING assignment_id`,
+		userID, req.Title, req.Description, req.DueDate, req.Priority, req.ClassID,
 	).Scan(&id)
 
 	if err != nil {
@@ -108,9 +114,9 @@ func (h *TaskHandler) UpdateTask(w http.ResponseWriter, r *http.Request) {
 
 	_, err := h.DB.Exec(
 		`UPDATE Assignment 
-         SET title=$1, description=$2, due_date=$3, priority=$4, status=$5, updated_at=NOW() 
-         WHERE assignment_id=$6 AND user_id=$7`,
-		req.Title, req.Description, req.DueDate, req.Priority, req.Status, taskID, userID,
+         SET title=$1, description=$2, due_date=$3, priority=$4, status=$5, class_id=$6, updated_at=NOW() 
+         WHERE assignment_id=$7 AND user_id=$8`,
+		req.Title, req.Description, req.DueDate, req.Priority, req.Status, req.ClassID, taskID, userID,
 	)
 	if err != nil {
 		http.Error(w, "Failed to update task", http.StatusInternalServerError)

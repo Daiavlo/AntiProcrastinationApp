@@ -1,0 +1,216 @@
+.classes-page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.classes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.classes-header h1 {
+    font-size: 32px;
+    font-weight: 800;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.classes-subtitle {
+    font-size: 16px;
+    color: var(--text-muted);
+    margin-top: 5px;
+}
+
+.add-class-btn {
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(204, 41, 41, 0.3);
+    transition: 0.2s;
+}
+
+.add-class-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(204, 41, 41, 0.4);
+}
+
+.classes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.class-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: 0.3s ease;
+    box-shadow: var(--card-shadow);
+}
+
+.class-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.class-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.class-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.class-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.class-actions button {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.class-actions button:hover {
+    color: var(--accent);
+}
+
+.class-actions .delete-btn:hover {
+    color: #ef4444;
+}
+
+.view-assignments-btn {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.view-assignments-btn:hover {
+    background-color: var(--accent);
+    color: white;
+}
+
+.no-classes {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--text-muted);
+    padding: 50px;
+    font-style: italic;
+}
+
+/* Modal styles - shared with TasksPage roughly */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: var(--bg-primary);
+    padding: 30px;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 25px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 700;
+    color: var(--text-secondary);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.color-picker {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.color-swatch {
+    height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+    border: 2px solid transparent;
+}
+
+.color-swatch:hover {
+    transform: scale(1.1);
+}
+
+.color-swatch.active {
+    border-color: var(--text-primary);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.modal-actions button {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.modal-actions .submit-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+}

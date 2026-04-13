@@ -19,6 +19,7 @@ func SetUp(db *sql.DB) http.Handler {
 	authH := &handlers.AuthHandler{DB: db}
 	taskH := &handlers.TaskHandler{DB: db}
 	friendH := &handlers.FriendHandler{DB: db}
+	classH := &handlers.ClassHandler{DB: db}
 
 	r.Post("/api/register", authH.Register)
 	r.Post("/api/login", authH.Login)
@@ -37,6 +38,11 @@ func SetUp(db *sql.DB) http.Handler {
 		r.Delete("/api/tasks/{id}", taskH.DeleteTask)
 		r.Put("/api/tasks/{id}", taskH.UpdateTask)
 		r.Put("/api/tasks/{id}/status", taskH.UpdateTaskStatus)
+
+		r.Get("/api/classes", classH.GetClasses)
+		r.Post("/api/classes", classH.CreateClass)
+		r.Put("/api/classes/{id}", classH.UpdateClass)
+		r.Delete("/api/classes/{id}", classH.DeleteClass)
 
 		r.Get("/api/friends", friendH.GetFriends)
 		r.Post("/api/friends/add", friendH.SendRequest)

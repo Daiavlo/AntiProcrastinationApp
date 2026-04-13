@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Sidebar from "../../Components/Sidebar/Sidebar";
 import { API_URL } from "../../config";
 import "./TasksPage.css";
@@ -23,18 +24,21 @@ const taskDateStr = (task) => task.due_date ? task.due_date.slice(0, 10) : null;
 const TasksPage = () => {
     const [user, setUser] = useState(null);
     const [tasks, setTasks] = useState([]);
+    const [classes, setClasses] = useState([]);
+    const location = useLocation();
 
     // view toggle
     const [viewMode, setViewMode] = useState("list"); // "list" | "calendar"
 
     // list-view state
     const [filterCategory, setFilterCategory] = useState("all");
+    const [filterClass, setFilterClass] = useState("all");
 
     // create/edit modal
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editingTaskId, setEditingTaskId] = useState(null);
-    const [newTask, setNewTask] = useState({ title: "", description: "", due_date: "", priority: "medium", status: "pending" });
+    const [newTask, setNewTask] = useState({ title: "", description: "", due_date: "", priority: "medium", status: "pending", class_id: "" });
 
     // calendar state
     const [calMonth, setCalMonth] = useState(new Date().getMonth());
@@ -45,12 +49,12 @@ const TasksPage = () => {
 
     // ── data fetching ─────────────────────────────────────────────────────────
 
-    const fetchTasks = (token) => {
-        fetch(`${API_URL}/tasks`, {
+    const fetchClasses = (token) => {
+        fetch(`${API_URL}/classes`, {
             headers: { "Authorization": `Bearer ${token}` }
         })
         .then(res => res.json())
-        .then(data => setTasks(data || []))
+        .then(data => setClasses(data || []))
         .catch(console.error);
     };
 
@@ -58,12 +62,22 @@ const TasksPage = () => {
         const token = sessionStorage.getItem("token");
         if (!token) { window.location.href = "/auth"; return; }
         const headers = { "Authorization": `Bearer ${token}` };
+        
         fetch(`${API_URL}/profile`, { headers })
             .then(res => res.json())
             .then(data => setUser(data))
             .catch(() => (window.location.href = "/auth"));
+
         fetchTasks(token);
-    }, []);
+        fetchClasses(token);
+
+        // Handle URL query for class filtering
+        const params = new URLSearchParams(location.search);
+        const classId = params.get("class");
+        if (classId) {
+            setFilterClass(classId);
+        }
+    }, [location.search]);
 
     const handleLogout = () => {
         sessionStorage.removeItem("token");
@@ -111,7 +125,7 @@ const TasksPage = () => {
     const openCreateModal = (dateStr = "") => {
         setIsEditing(false);
         setEditingTaskId(null);
-        setNewTask({ title: "", description: "", due_date: dateStr, priority: "medium", status: "pending" });
+        setNewTask({ title: "", description: "", due_date: dateStr, priority: "medium", status: "pending", class_id: filterClass !== "all" ? filterClass : "" });
         setIsModalOpen(true);
     };
 
@@ -125,7 +139,8 @@ const TasksPage = () => {
             description: task.description || "",
             due_date: datePart,
             priority: task.priority || "medium",
-            status: task.status || "pending"
+            status: task.status || "pending",
+            class_id: task.class_id || ""
         });
         setIsModalOpen(true);
         setDetailTask(null); // Close detail panel when editing
@@ -153,12 +168,13 @@ const TasksPage = () => {
                     description: newTask.description, 
                     due_date: formattedDate, 
                     priority: newTask.priority, 
-                    status: newTask.status || "pending" 
+                    status: newTask.status || "pending",
+                    class_id: newTask.class_id ? parseInt(newTask.class_id) : null
                 })
             });
             if (res.ok) {
                 setIsModalOpen(false);
-                setNewTask({ title: "", description: "", due_date: "", priority: "medium", status: "pending" });
+                setNewTask({ title: "", description: "", due_date: "", priority: "medium", status: "pending", class_id: "" });
                 setIsEditing(false);
                 setEditingTaskId(null);
                 fetchTasks(token);
@@ -179,6 +195,8 @@ const TasksPage = () => {
                 cd.setHours(0,0,0,0);
                 if (cd < startOfWeek || cd > endOfWeek) return false;
             }
+            if (filterClass !== "all" && String(task.class_id) !== String(filterClass)) return false;
+
             if (filterCategory === "all")     return true;
             if (filterCategory === "overdue") return isOverdue(task);
             return task.status === filterCategory;
@@ -261,7 +279,7 @@ const TasksPage = () => {
                         <>
                             <div className="tasks-filters">
                                 {[
-                                    { key: "all",         label: "All" },
+                                    { key: "all",         label: "All Status" },
                                     { key: "pending",     label: "Pending" },
                                     { key: "in_progress", label: "In Progress" },
                                     { key: "overdue",     label: "Overdue", danger: true },
@@ -276,6 +294,20 @@ const TasksPage = () => {
                                         {f.label}
                                     </button>
                                 ))}
+                                
+                                <div className="class-filter-divider"></div>
+
+                                <select 
+                                    className="class-filter-select"
+                                    value={filterClass}
+                                    onChange={(e) => setFilterClass(e.target.value)}
+                                >
+                                    <option value="all">All Classes</option>
+                                    <option value="general">General (No Class)</option>
+                                    {classes.map(c => (
+                                        <option key={c.class_id} value={c.class_id}>{c.name}</option>
+                                    ))}
+                                </select>
                             </div>
 
                             <div className="tasks-list-detailed">
@@ -286,10 +318,12 @@ const TasksPage = () => {
                                         onClick={() => setDetailTask(task)}
                                         style={{ cursor: "pointer" }}
                                     >
-                                        <div className={`priority-indicator ${getPriorityColor(task.priority)} ${task.status || "pending"}`}></div>
+                                        <div className="priority-indicator" style={{ backgroundColor: task.class_color || getPriorityColor(task.priority) === 'high' ? 'var(--accent)' : getPriorityColor(task.priority) === 'medium' ? 'var(--warning)' : 'var(--info)' }}></div>
                                         <div className="task-row-main">
                                             <div className="task-row-top">
-                                                <span className="task-row-cat">General</span>
+                                                <span className="task-row-cat" style={{ color: task.class_color || 'var(--text-muted)' }}>
+                                                    {task.class_name || "General"}
+                                                </span>
                                                 <div style={{ display:"flex", alignItems:"center", gap:"0.5rem" }}>
                                                     {isOverdue(task) && (
                                                         <span className="overdue-badge">Overdue</span>
@@ -473,6 +507,16 @@ const TasksPage = () => {
                                             <option value="low">Low</option>
                                             <option value="medium">Medium</option>
                                             <option value="high">High</option>
+                                        </select>
+                                    </div>
+                                    <div className="form-group half">
+                                        <label>Class</label>
+                                        <select value={newTask.class_id}
+                                            onChange={(e) => setNewTask({...newTask, class_id: e.target.value})}>
+                                            <option value="">General (No Class)</option>
+                                            {classes.map(c => (
+                                                <option key={c.class_id} value={c.class_id}>{c.name}</option>
+                                            ))}
                                         </select>
                                     </div>
                                 </div>

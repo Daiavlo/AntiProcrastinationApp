@@ -75,6 +75,21 @@ CREATE TABLE Connection (
 
 );
 
+CREATE TABLE Class (
+    class_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    color VARCHAR(7), -- HEX color for UI
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT FK_Class_User
+        FOREIGN KEY (user_id)
+        REFERENCES users(user_id)
+        ON DELETE CASCADE
+);
+
+
 
 
 CREATE TABLE Assignment(
@@ -91,6 +106,8 @@ CREATE TABLE Assignment(
     Created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     Updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
+    class_id BIGINT,
+
 
     CONSTRAINT FK_Assignment_User
         FOREIGN KEY (user_id)
@@ -98,5 +115,10 @@ CREATE TABLE Assignment(
         ON DELETE CASCADE,
 
     CONSTRAINT CHK_Priority CHECK (Priority IN ('low', 'medium', 'high')),
-    CONSTRAINT CHK_Status CHECK (Status IN ('pending', 'in_progress', 'completed'))
+    CONSTRAINT CHK_Status CHECK (Status IN ('pending', 'in_progress', 'completed')),
+
+    CONSTRAINT FK_Assignment_Class
+        FOREIGN KEY (class_id)
+        REFERENCES Class(class_id)
+        ON DELETE SET NULL
 );

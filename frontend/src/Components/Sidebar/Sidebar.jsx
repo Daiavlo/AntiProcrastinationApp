@@ -13,6 +13,7 @@ const Sidebar = ({ user, handleLogout }) => {
         { name: "Home", path: "/home", icon: "" },
         { name: "Profile", path: "/profile", icon: "" },
         { name: "Tasks", path: "/tasks", icon: "" },
+        { name: "Classes", path: "/classes", icon: "" },
         { name: "Friends", path: "/friends", icon: "" },
         { name: "Settings", path: "/settings", icon: "" },
     ];

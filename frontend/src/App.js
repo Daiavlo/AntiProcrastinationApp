@@ -9,6 +9,7 @@ import FriendsPage from './Pages/Friends/FriendsPage';
 import AddFriendsPage from './Pages/Friends/AddFriendsPage';
 import SettingsPage from './Pages/Settings/SettingsPage';
 import AlienProfilePage from './Pages/Profile/AlienProfilePage';
+import ClassesPage from './Pages/Classes/ClassesPage';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/tasks" element={<TasksPage />} />
           <Route path="/friends" element={<FriendsPage />} />
           <Route path="/friends/add" element={<AddFriendsPage />} />
+          <Route path="/classes" element={<ClassesPage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Routes>
       </Router>

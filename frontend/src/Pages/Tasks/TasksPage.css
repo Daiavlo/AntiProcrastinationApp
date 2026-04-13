@@ -328,6 +328,22 @@
     cursor: pointer;
 }
 
+.delete-btn {
+    background: none;
+    color: #ff6b6b;
+    border: 1px solid rgba(255, 107, 107, 0.4);
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.delete-btn:hover {
+    background: rgba(255, 107, 107, 0.1);
+    border-color: #ff6b6b;
+}
+
 /* ─── Header right cluster ─────────────────────────────────────────────────── */
 .tasks-header-right {
     display: flex;

@@ -189,6 +189,25 @@ const TasksPage = () => {
         } catch (err) { console.error(err); }
     };
 
+    const handleDeleteTask = async () => {
+        if (!window.confirm("Are you sure you want to delete this assignment?")) return;
+        const token = sessionStorage.getItem("token");
+        if (!token || !editingTaskId) return;
+
+        try {
+            const res = await fetch(`${API_URL}/tasks/${editingTaskId}`, {
+                method: "DELETE",
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            if (res.ok) {
+                setIsModalOpen(false);
+                setIsEditing(false);
+                setEditingTaskId(null);
+                fetchTasks(token);
+            }
+        } catch (err) { console.error(err); }
+    };
+
     // ── list filter ───────────────────────────────────────────────────────────
 
     const getVisibleTasks = () => {
@@ -528,6 +547,10 @@ const TasksPage = () => {
                                     </div>
                                 </div>
                                 <div className="task-modal-actions">
+                                    {isEditing && (
+                                        <button type="button" className="delete-btn" onClick={handleDeleteTask}>Delete</button>
+                                    )}
+                                    <div style={{ flex: 1 }}></div>
                                     <button type="button" className="cancel-btn" onClick={() => setIsModalOpen(false)}>Cancel</button>
                                     <button type="submit" className="submit-btn">{isEditing ? "Save Changes" : "Create Assignment"}</button>
                                 </div>

@@ -183,6 +183,23 @@
     cursor: pointer;
 }
 
+.edit-task-link-btn {
+    background: none;
+    border: none;
+    color: var(--accent);
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-right: 1rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.edit-task-link-btn:hover {
+    background: rgba(204, 41, 41, 0.1);
+}
+
 /* --- Task Modal --- */
 .task-modal-overlay {
     position: fixed;

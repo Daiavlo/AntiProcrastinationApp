@@ -35,6 +35,7 @@ func SetUp(db *sql.DB) http.Handler {
 		r.Get("/api/tasks", taskH.GetTasks)
 		r.Post("/api/tasks", taskH.CreateTask)
 		r.Delete("/api/tasks/{id}", taskH.DeleteTask)
+		r.Put("/api/tasks/{id}", taskH.UpdateTask)
 		r.Put("/api/tasks/{id}/status", taskH.UpdateTaskStatus)
 
 		r.Get("/api/friends", friendH.GetFriends)

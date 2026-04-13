@@ -96,3 +96,25 @@ func (h *TaskHandler) UpdateTaskStatus(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 }
+func (h *TaskHandler) UpdateTask(w http.ResponseWriter, r *http.Request) {
+	userID := r.Context().Value(middleware.UserIDKey).(int64)
+	taskID, _ := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+
+	var req models.CreateTaskRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	_, err := h.DB.Exec(
+		`UPDATE Assignment 
+         SET title=$1, description=$2, due_date=$3, priority=$4, status=$5, updated_at=NOW() 
+         WHERE assignment_id=$6 AND user_id=$7`,
+		req.Title, req.Description, req.DueDate, req.Priority, req.Status, taskID, userID,
+	)
+	if err != nil {
+		http.Error(w, "Failed to update task", http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}

@@ -30,9 +30,11 @@ const TasksPage = () => {
     // list-view state
     const [filterCategory, setFilterCategory] = useState("all");
 
-    // create modal
+    // create/edit modal
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [newTask, setNewTask] = useState({ title: "", description: "", due_date: "", priority: "medium" });
+    const [isEditing, setIsEditing] = useState(false);
+    const [editingTaskId, setEditingTaskId] = useState(null);
+    const [newTask, setNewTask] = useState({ title: "", description: "", due_date: "", priority: "medium", status: "pending" });
 
     // calendar state
     const [calMonth, setCalMonth] = useState(new Date().getMonth());
@@ -107,8 +109,26 @@ const TasksPage = () => {
     // ── create task ───────────────────────────────────────────────────────────
 
     const openCreateModal = (dateStr = "") => {
-        setNewTask({ title: "", description: "", due_date: dateStr, priority: "medium" });
+        setIsEditing(false);
+        setEditingTaskId(null);
+        setNewTask({ title: "", description: "", due_date: dateStr, priority: "medium", status: "pending" });
         setIsModalOpen(true);
+    };
+
+    const openEditModal = (task) => {
+        setIsEditing(true);
+        setEditingTaskId(task.assignment_id);
+        // Extract YYYY-MM-DD from the task date
+        const datePart = task.due_date ? task.due_date.slice(0, 10) : "";
+        setNewTask({
+            title: task.title,
+            description: task.description || "",
+            due_date: datePart,
+            priority: task.priority || "medium",
+            status: task.status || "pending"
+        });
+        setIsModalOpen(true);
+        setDetailTask(null); // Close detail panel when editing
     };
 
     const handleCreateTask = async (e) => {
@@ -116,16 +136,31 @@ const TasksPage = () => {
         const token = sessionStorage.getItem("token");
         if (!token) return;
         try {
+            // FIX: Append T00:00:00 to treat input as local time and avoid day shift bug
             let formattedDate = new Date().toISOString();
-            if (newTask.due_date) formattedDate = new Date(newTask.due_date).toISOString();
-            const res = await fetch(`${API_URL}/tasks`, {
-                method: "POST",
+            if (newTask.due_date) {
+                formattedDate = new Date(newTask.due_date + "T00:00:00").toISOString();
+            }
+
+            const url = isEditing ? `${API_URL}/tasks/${editingTaskId}` : `${API_URL}/tasks`;
+            const method = isEditing ? "PUT" : "POST";
+
+            const res = await fetch(url, {
+                method: method,
                 headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
-                body: JSON.stringify({ title: newTask.title, description: newTask.description, due_date: formattedDate, priority: newTask.priority, status: "pending" })
+                body: JSON.stringify({ 
+                    title: newTask.title, 
+                    description: newTask.description, 
+                    due_date: formattedDate, 
+                    priority: newTask.priority, 
+                    status: newTask.status || "pending" 
+                })
             });
             if (res.ok) {
                 setIsModalOpen(false);
-                setNewTask({ title: "", description: "", due_date: "", priority: "medium" });
+                setNewTask({ title: "", description: "", due_date: "", priority: "medium", status: "pending" });
+                setIsEditing(false);
+                setEditingTaskId(null);
                 fetchTasks(token);
             }
         } catch (err) { console.error(err); }
@@ -266,6 +301,12 @@ const TasksPage = () => {
                                             <p className="task-row-desc">{task.description || "No description provided."}</p>
                                         </div>
                                         <div className="task-row-status" onClick={e => e.stopPropagation()}>
+                                            <button 
+                                                className="edit-task-link-btn" 
+                                                onClick={(e) => { e.stopPropagation(); openEditModal(task); }}
+                                            >
+                                                Edit
+                                            </button>
                                             <select
                                                 className="status-select"
                                                 value={task.status || "pending"}
@@ -375,15 +416,24 @@ const TasksPage = () => {
 
                             <div className="task-detail-status-row">
                                 <label>Status</label>
-                                <select
-                                    className="status-select"
-                                    value={detailTask.status || "pending"}
-                                    onChange={(e) => handleChangeStatus(detailTask.assignment_id, e.target.value)}
-                                >
-                                    <option value="pending">Pending</option>
-                                    <option value="in_progress">In Progress</option>
-                                    <option value="completed">Completed</option>
-                                </select>
+                                <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                                    <select
+                                        className="status-select"
+                                        value={detailTask.status || "pending"}
+                                        onChange={(e) => handleChangeStatus(detailTask.assignment_id, e.target.value)}
+                                    >
+                                        <option value="pending">Pending</option>
+                                        <option value="in_progress">In Progress</option>
+                                        <option value="completed">Completed</option>
+                                    </select>
+                                    <button 
+                                        className="submit-btn" 
+                                        style={{ padding: "6px 15px", fontSize: "0.85rem" }}
+                                        onClick={() => openEditModal(detailTask)}
+                                    >
+                                        Edit Details
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -394,7 +444,7 @@ const TasksPage = () => {
                     <div className="task-modal-overlay">
                         <div className="task-modal-content">
                             <div className="task-modal-header">
-                                <h2>Create New Assignment</h2>
+                                <h2>{isEditing ? "Edit Assignment" : "Create New Assignment"}</h2>
                                 <button className="close-modal-btn" onClick={() => setIsModalOpen(false)}>×</button>
                             </div>
                             <form onSubmit={handleCreateTask} className="task-modal-form">
@@ -428,7 +478,7 @@ const TasksPage = () => {
                                 </div>
                                 <div className="task-modal-actions">
                                     <button type="button" className="cancel-btn" onClick={() => setIsModalOpen(false)}>Cancel</button>
-                                    <button type="submit" className="submit-btn">Create Assignment</button>
+                                    <button type="submit" className="submit-btn">{isEditing ? "Save Changes" : "Create Assignment"}</button>
                                 </div>
                             </form>
                         </div>

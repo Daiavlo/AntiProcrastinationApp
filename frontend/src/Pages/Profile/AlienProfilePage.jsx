@@ -81,7 +81,15 @@ const AlienProfilePage = () => {
                             <p className="profile-bio">{alienUser.bio || "This user is a mystery..."}</p>
                             
                             <div className="alien-actions">
-                                <button className="edit-profile-action">Add Friend</button>
+                                {isFriend ? (
+                                    <button className="edit-profile-action disabled" disabled>
+                                        ✓ Friends
+                                    </button>
+                                ) : (
+                                    <button className="edit-profile-action">
+                                        Add Friend
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>

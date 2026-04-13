@@ -58,6 +58,13 @@ const TasksPage = () => {
         .catch(console.error);
     };
 
+    const fetchTasks = (token) => {
+        fetch(`${API_URL}/tasks`, { headers: { "Authorization": `Bearer ${token}` } })
+            .then(res => res.json())
+            .then(data => setTasks(data || []))
+            .catch(console.error);
+    };
+
     useEffect(() => {
         const token = sessionStorage.getItem("token");
         if (!token) { window.location.href = "/auth"; return; }

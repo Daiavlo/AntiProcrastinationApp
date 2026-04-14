@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import "./HelpModal.css";
 
 const HelpModal = ({ isOpen, onClose }) => {
@@ -11,7 +12,7 @@ const HelpModal = ({ isOpen, onClose }) => {
         }
     };
 
-    return (
+    return ReactDOM.createPortal(
         <div className="help-modal-overlay" onClick={handleOverlayClick}>
             <div className="help-modal-content">
                 <div className="help-modal-header">
@@ -66,7 +67,8 @@ const HelpModal = ({ isOpen, onClose }) => {
 
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };
 

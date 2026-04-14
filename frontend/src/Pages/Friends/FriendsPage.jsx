@@ -230,12 +230,6 @@ const FriendsPage = () => {
                                                     <span className="friend-card-status">Focus Partner</span>
                                                 </div>
                                             </div>
-                                            <div className="friend-card-stats">
-                                                <div className="stat-mini">
-                                                    <span className="stat-mini-val">???</span>
-                                                    <span className="stat-mini-label">Points</span>
-                                                </div>
-                                            </div>
                                             <div className="friend-card-actions">
                                                 <button
                                                     className="compare-btn"

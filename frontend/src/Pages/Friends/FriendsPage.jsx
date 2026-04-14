@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../Components/Sidebar/Sidebar";
 import ComparePointsModal from "../Profile/ComparePointsModal";
@@ -7,7 +7,7 @@ import "./FriendsPage.css";
 import { API_URL as API } from "../../config";
 
 const authHeaders = () => ({
-    "Authorization": `Bearer ${sessionStorage.getItem("token")}`,
+    "Authorization": `Bearer ${localStorage.getItem("token")}`,
     "Content-Type": "application/json",
 });
 
@@ -55,6 +55,15 @@ const FriendsPage = () => {
         setFriends(enriched);
     }, [user]);
 
+    const leaderboard = useMemo(() => {
+        if (!user) return [];
+        const all = [
+            { id: user.user_id, name: user.username, avatar: user.avatar, points: user.points || 0, isMe: true },
+            ...friends.map(f => ({ ...f, isMe: false }))
+        ];
+        return all.sort((a, b) => b.points - a.points);
+    }, [user, friends]);
+
     const loadPending = useCallback(async () => {
         const res = await fetch(`${API}/friends/pending`, { headers: authHeaders() });
         if (!res.ok) { setPendingRequests([]); return; }
@@ -65,7 +74,7 @@ const FriendsPage = () => {
 
 
     useEffect(() => {
-        const token = sessionStorage.getItem("token");
+        const token = localStorage.getItem("token");
         if (!token) { window.location.href = "/auth"; return; }
 
         fetch(`${API}/profile`, { headers: authHeaders() })
@@ -118,7 +127,7 @@ const FriendsPage = () => {
 
     // ─── Helpers ──────────────────────────────────────────────────────────
     const handleLogout = () => {
-        sessionStorage.removeItem("token");
+        localStorage.removeItem("token");
         window.location.href = "/auth";
     };
 
@@ -223,7 +232,7 @@ const FriendsPage = () => {
                                             </div>
                                             <div className="friend-card-stats">
                                                 <div className="stat-mini">
-                                                    <span className="stat-mini-val">{friend.points}</span>
+                                                    <span className="stat-mini-val">???</span>
                                                     <span className="stat-mini-label">Points</span>
                                                 </div>
                                             </div>
@@ -247,7 +256,25 @@ const FriendsPage = () => {
                             </section>
                         </div>
 
-
+                        {/* ── Right column (Leaderboard) ── */}
+                        <div className="friends-right-col">
+                            <section className="leaderboard-section">
+                                <h2>🏆 Leaderboard</h2>
+                                <div className="leaderboard-list">
+                                    {leaderboard.map((person, index) => (
+                                        <div key={`lb-${person.id}`} className={`leaderboard-item ${person.isMe ? 'is-me' : ''}`}>
+                                            <div className="lb-rank">
+                                                {index === 0 ? '👑' : index + 1}
+                                            </div>
+                                            <img src={person.avatar} alt={person.name} className="lb-avatar" />
+                                            <div className="lb-info">
+                                                <span className="lb-name">{person.name} {person.isMe && '(You)'}</span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+                        </div>
 
                     </div>
                 </div>

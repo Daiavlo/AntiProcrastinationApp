@@ -15,7 +15,7 @@ const AlienProfilePage = () => {
     const [isFriend, setIsFriend] = useState(false);
 
     useEffect(() => {
-        const token = sessionStorage.getItem("token");
+        const token = localStorage.getItem("token");
         if (!token) {
             navigate("/auth");
             return;
@@ -58,7 +58,7 @@ const AlienProfilePage = () => {
     if (!myUser || !alienUser) return null;
 
     const handleLogout = () => {
-        sessionStorage.removeItem("token");
+        localStorage.removeItem("token");
         navigate("/auth");
     };
 
@@ -94,13 +94,7 @@ const AlienProfilePage = () => {
                         </div>
                     </div>
 
-                    {/* Stats Summary */}
-                    <div className="profile-simple-stats">
-                        <div className="stat-card">
-                            <span className="stat-value">{alienUser.points || 0}</span>
-                            <span className="stat-label">Points</span>
-                        </div>
-                    </div>
+
 
                     {/* Compare Points — friends only */}
                     {isFriend && (

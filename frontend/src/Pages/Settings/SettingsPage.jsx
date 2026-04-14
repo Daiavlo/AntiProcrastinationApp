@@ -9,7 +9,7 @@ const SettingsPage = () => {
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-        const token = sessionStorage.getItem("token");
+        const token = localStorage.getItem("token");
         if (!token) {
             window.location.href = "/auth";
             return;
@@ -24,7 +24,7 @@ const SettingsPage = () => {
     }, []);
 
     const handleLogout = () => {
-        sessionStorage.removeItem("token");
+        localStorage.removeItem("token");
         window.location.href = "/auth";
     };
 

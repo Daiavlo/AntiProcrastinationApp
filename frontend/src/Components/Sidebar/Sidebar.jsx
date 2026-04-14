@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./Sidebar.css";
 import homeIcon from "../Assets/person.png";
 import profileIcon from "../Assets/person.png";
+import HelpModal from "../HelpModal/HelpModal";
 
 
 
 const Sidebar = ({ user, handleLogout }) => {
     const location = useLocation();
+    const [isHelpOpen, setIsHelpOpen] = useState(false);
 
     const navItems = [
         { name: "Home", path: "/home", icon: "" },
@@ -44,7 +46,7 @@ const Sidebar = ({ user, handleLogout }) => {
                     </div>
                 </div>
                 <div className="extra-links">
-                    <button className="extra-link">
+                    <button className="extra-link" onClick={() => setIsHelpOpen(true)}>
                         <span className="nav-icon"></span> Help
                     </button>
                     <button className="extra-link logout" onClick={handleLogout}>
@@ -52,6 +54,7 @@ const Sidebar = ({ user, handleLogout }) => {
                     </button>
                 </div>
             </div>
+            <HelpModal isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} />
         </div>
     );
 };

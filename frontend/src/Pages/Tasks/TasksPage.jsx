@@ -66,7 +66,7 @@ const TasksPage = () => {
     };
 
     useEffect(() => {
-        const token = sessionStorage.getItem("token");
+        const token = localStorage.getItem("token");
         if (!token) { window.location.href = "/auth"; return; }
         const headers = { "Authorization": `Bearer ${token}` };
         
@@ -87,7 +87,7 @@ const TasksPage = () => {
     }, [location.search]);
 
     const handleLogout = () => {
-        sessionStorage.removeItem("token");
+        localStorage.removeItem("token");
         window.location.href = "/auth";
     };
 
@@ -113,7 +113,7 @@ const TasksPage = () => {
     // ── status change ─────────────────────────────────────────────────────────
 
     const handleChangeStatus = async (taskId, newStatus) => {
-        const token = sessionStorage.getItem("token");
+        const token = localStorage.getItem("token");
         if (!token) return;
         setTasks(prev => prev.map(t => t.assignment_id === taskId ? { ...t, status: newStatus } : t));
         if (detailTask?.assignment_id === taskId) setDetailTask(prev => ({ ...prev, status: newStatus }));
@@ -155,7 +155,7 @@ const TasksPage = () => {
 
     const handleCreateTask = async (e) => {
         e.preventDefault();
-        const token = sessionStorage.getItem("token");
+        const token = localStorage.getItem("token");
         if (!token) return;
         try {
             // FIX: Append T00:00:00 to treat input as local time and avoid day shift bug
@@ -191,7 +191,7 @@ const TasksPage = () => {
 
     const handleDeleteTask = async () => {
         if (!window.confirm("Are you sure you want to delete this assignment?")) return;
-        const token = sessionStorage.getItem("token");
+        const token = localStorage.getItem("token");
         if (!token || !editingTaskId) return;
 
         try {

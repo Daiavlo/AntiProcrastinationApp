@@ -1,19 +1,55 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../Components/Sidebar/Sidebar";
 import "./HomePage.css";
 
 import { API_URL as API } from "../../config";
-const authHeaders = () => ({ "Authorization": `Bearer ${sessionStorage.getItem("token")}` });
+const authHeaders = () => ({ "Authorization": `Bearer ${localStorage.getItem("token")}` });
 
 const HomePage = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [tasks, setTasks] = useState([]);
     const [friends, setFriends] = useState([]);
+    const [showNotifications, setShowNotifications] = useState(false);
+
+    const notifications = useMemo(() => {
+        const today = new Date();
+        today.setHours(0,0,0,0);
+
+        const notifs = [];
+
+        tasks.forEach(task => {
+            if ((task.status === 'pending' || task.status === 'in_progress') && task.priority === 'high' && task.due_date) {
+                const dueDate = new Date(task.due_date);
+                dueDate.setHours(0,0,0,0);
+                
+                const diffTime = dueDate.getTime() - today.getTime();
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                if (diffDays >= 0 && diffDays <= 1) {
+                    notifs.push({
+                        id: `urgent-${task.assignment_id}`,
+                        type: 'urgent',
+                        message: `🚨 Urgent: "${task.title}" is due ${diffDays === 0 ? 'today' : 'tomorrow'}!`,
+                        taskId: task.assignment_id
+                    });
+                } else if (diffDays > 1 && diffDays <= 7) {
+                    notifs.push({
+                        id: `upcoming-${task.assignment_id}`,
+                        type: 'upcoming',
+                        message: `📅 Upcoming: "${task.title}" is due in ${diffDays} days.`,
+                        taskId: task.assignment_id
+                    });
+                }
+            }
+        });
+
+        return notifs;
+    }, [tasks]);
 
     useEffect(() => {
-        const token = sessionStorage.getItem("token");
+        const token = localStorage.getItem("token");
         if (!token) {
             navigate("/auth");
             return;
@@ -65,7 +101,7 @@ const HomePage = () => {
     }, []);
 
     const handleLogout = () => {
-        sessionStorage.removeItem("token");
+        localStorage.removeItem("token");
         navigate("/auth");
     };
 
@@ -97,8 +133,27 @@ const HomePage = () => {
                             <h1 className="hp-username">{user.username}</h1>
                         </div>
                     </div>
-                    <div className="hp-header-actions">
-                        <button className="hp-icon-btn">🔔</button>
+                    <div className="hp-header-actions" style={{ position: 'relative' }}>
+                        <button className="hp-icon-btn" onClick={() => setShowNotifications(!showNotifications)}>
+                            🔔
+                            {notifications.length > 0 && <span className="notification-badge">{notifications.length}</span>}
+                        </button>
+                        {showNotifications && (
+                            <div className="notifications-dropdown">
+                                <h4>Notifications</h4>
+                                {notifications.length === 0 ? (
+                                    <p className="no-notifications">You're all caught up!</p>
+                                ) : (
+                                    <ul className="notifications-list">
+                                        {notifications.map(n => (
+                                            <li key={n.id} className={`notification-item ${n.type}`}>
+                                                {n.message}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </header>
 

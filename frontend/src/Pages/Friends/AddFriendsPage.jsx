@@ -6,7 +6,7 @@ import "./AddFriendsPage.css";
 import { API_URL as API } from "../../config";
 
 const authHeaders = () => ({
-    "Authorization": `Bearer ${sessionStorage.getItem("token")}`,
+    "Authorization": `Bearer ${localStorage.getItem("token")}`,
     "Content-Type": "application/json",
 });
 
@@ -21,7 +21,7 @@ const AddFriendsPage = () => {
 
     // ─── Load current user ─────────────────────────────────────────────
     useEffect(() => {
-        const token = sessionStorage.getItem("token");
+        const token = localStorage.getItem("token");
         if (!token) { window.location.href = "/auth"; return; }
 
         fetch(`${API}/profile`, { headers: authHeaders() })
@@ -118,7 +118,7 @@ const AddFriendsPage = () => {
     };
 
     const handleLogout = () => {
-        sessionStorage.removeItem("token");
+        localStorage.removeItem("token");
         window.location.href = "/auth";
     };
 

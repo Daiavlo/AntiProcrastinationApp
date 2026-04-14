@@ -50,7 +50,7 @@ const LoginSignup = () => {
             }
 
             const data = await response.json();
-            sessionStorage.setItem("token", data.token);
+            localStorage.setItem("token", data.token);
             navigate("/home");
         } catch (error) {
             setSignInError("Server error. Please try again later.");

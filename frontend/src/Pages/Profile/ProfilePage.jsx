@@ -10,7 +10,7 @@ const ProfilePage = () => {
     const [editPronouns, setEditPronouns] = useState("");
 
     useEffect(() => {
-        const token = sessionStorage.getItem("token");
+        const token = localStorage.getItem("token");
         if (!token) {
             window.location.href = "/auth";
             return;
@@ -29,7 +29,7 @@ const ProfilePage = () => {
             setEditPronouns(data.pronouns || "");
         })
         .catch(() => {
-            sessionStorage.removeItem("token");
+            localStorage.removeItem("token");
             window.location.href = "/auth";
         });
     }, []);
@@ -37,13 +37,13 @@ const ProfilePage = () => {
     if (!user) return null;
 
     const handleLogout = () => {
-        sessionStorage.removeItem("token");
+        localStorage.removeItem("token");
         window.location.href = "/auth";
     };
 
     const handleFileUpload = async (field, file) => {
         if (!file) return;
-        const token = sessionStorage.getItem("token");
+        const token = localStorage.getItem("token");
         if (!token) return;
 
         const formData = new FormData();
@@ -74,7 +74,7 @@ const ProfilePage = () => {
     };
 
     const handleSaveTextProfile = async () => {
-        const token = sessionStorage.getItem("token");
+        const token = localStorage.getItem("token");
         if (!token) return;
 
         const formData = new FormData();

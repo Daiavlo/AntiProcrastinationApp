@@ -28,7 +28,7 @@ const ClassesPage = () => {
     };
 
     useEffect(() => {
-        const token = sessionStorage.getItem("token");
+        const token = localStorage.getItem("token");
         if (!token) { navigate("/auth"); return; }
         const headers = { "Authorization": `Bearer ${token}` };
         
@@ -42,7 +42,7 @@ const ClassesPage = () => {
 
     const handleCreateOrUpdateClass = async (e) => {
         e.preventDefault();
-        const token = sessionStorage.getItem("token");
+        const token = localStorage.getItem("token");
         if (!token) return;
 
         const url = isEditing ? `${API_URL}/classes/${editingClassId}` : `${API_URL}/classes`;
@@ -68,7 +68,7 @@ const ClassesPage = () => {
 
     const handleDeleteClass = async (id) => {
         if (!window.confirm("Are you sure? All assignments for this class will become 'General'.")) return;
-        const token = sessionStorage.getItem("token");
+        const token = localStorage.getItem("token");
         try {
             const res = await fetch(`${API_URL}/classes/${id}`, {
                 method: "DELETE",
@@ -86,7 +86,7 @@ const ClassesPage = () => {
     };
 
     const handleLogout = () => {
-        sessionStorage.removeItem("token");
+        localStorage.removeItem("token");
         navigate("/auth");
     };
 

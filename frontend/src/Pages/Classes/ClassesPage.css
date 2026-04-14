@@ -214,3 +214,21 @@
     color: white;
     border: none;
 }
+
+/* --- Mobile Adjustments --- */
+@media (max-width: 768px) {
+    .classes-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .classes-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .class-card {
+        padding: 20px;
+    }
+}
+

@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	// Try loading .env from a few common places
+	
 	if err := godotenv.Load(); err != nil {
 		if err2 := godotenv.Load("backend/.env"); err2 != nil {
 			// As a last resort, try looking in the same directory as the executable itself

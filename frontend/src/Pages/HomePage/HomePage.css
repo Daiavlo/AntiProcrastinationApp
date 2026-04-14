@@ -430,3 +430,71 @@
 .notification-item.upcoming {
     border-left: 4px solid var(--warning);
 }
+
+/* --- Mobile Nav & Responsive Adjustments --- */
+@media (max-width: 768px) {
+    .hp-layout {
+        padding-left: 0;
+        padding-top: 60px; /* Space for mobile header */
+        flex-direction: column;
+    }
+
+    .hp-main-content {
+        padding: 20px;
+    }
+
+    .hp-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .hp-profile-summary {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .hp-header-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .hp-friends-list {
+        padding: 20px;
+        gap: 15px;
+    }
+
+    .hp-task-card {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 25px 20px;
+        gap: 20px;
+    }
+
+    .hp-task-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .hp-focus-btn {
+        flex: 1;
+        padding: 12px 20px;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .hp-fab {
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+    }
+
+    .notifications-dropdown {
+        width: 280px;
+        right: -10px;
+    }
+}

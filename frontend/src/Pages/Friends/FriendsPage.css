@@ -381,3 +381,37 @@
     font-weight: 600;
     color: var(--text-muted);
 }
+
+/* --- Mobile Adjustments --- */
+@media (max-width: 768px) {
+    .friends-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    .friends-grid-view {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .friends-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .pending-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .pending-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .accept-btn, .decline-btn {
+        flex: 1;
+    }
+}

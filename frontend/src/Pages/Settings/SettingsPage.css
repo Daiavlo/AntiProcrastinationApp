@@ -137,3 +137,19 @@ input:checked + .priority-indicator.high { background-color: var(--accent); }
     font-size: 14px;
     color: var(--text-primary);
 }
+
+/* --- Mobile Adjustments --- */
+@media (max-width: 768px) {
+    .settings-container {
+        padding: 0 10px;
+    }
+
+    .settings-section {
+        padding: 20px;
+    }
+
+    .presets-grid {
+        grid-template-columns: 1fr;
+    }
+}
+

@@ -53,12 +53,12 @@ const Sidebar = ({ user, handleLogout }) => {
                 </div>
 
                 <div className="sidebar-bottom">
-                    <div className="user-profile-capsule">
+                    <Link to="/profile" className="user-profile-capsule" style={{ textDecoration: 'none' }}>
                         <img src={user?.avatar} alt="avatar" className="sidebar-avatar" />
                         <div className="user-info">
                             <span className="user-name">{user?.username}</span>
                         </div>
-                    </div>
+                    </Link>
                     <div className="extra-links">
                         <button className="extra-link" onClick={() => setIsHelpOpen(true)}>
                             <span className="nav-icon"></span> Help
@@ -69,25 +69,8 @@ const Sidebar = ({ user, handleLogout }) => {
                     </div>
                 </div>
                 <HelpModal isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} />
-
-                <div className="sidebar-bottom">
-                    <Link to="/profile" className="user-profile-capsule" style={{ textDecoration: 'none' }}>
-                        <img src={user?.avatar} alt="avatar" className="sidebar-avatar" />
-                        <div className="user-info">
-                            <span className="user-name">{user?.username}</span>
-                        </div>
-                    </Link>
-                    <div className="extra-links">
-                        <button className="extra-link">
-                            <span className="nav-icon"></span> Help
-                        </button>
-                        <button className="extra-link logout" onClick={handleLogout}>
-                            <span className="nav-icon"></span> Logout
-                        </button>
-                    </div>
-
-                </div>
-            </>
+            </div>
+        </>
             );
 };
 

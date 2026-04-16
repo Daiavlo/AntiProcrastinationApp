@@ -46,8 +46,9 @@ func SetUp(db *sql.DB) http.Handler {
 
 		r.Get("/api/friends", friendH.GetFriends)
 		r.Post("/api/friends/add", friendH.SendRequest)
-		r.Post("/api/friends/accept", friendH.AcceptRequest)      // ← new
-		r.Get("/api/friends/pending", friendH.GetPendingRequests) // ← new
+		r.Post("/api/friends/accept", friendH.AcceptRequest)
+		r.Delete("/api/friends/{id}", friendH.RemoveFriend)
+		r.Get("/api/friends/pending", friendH.GetPendingRequests)
 		r.Get("/api/users/search", friendH.SearchUsers)
 	})
 

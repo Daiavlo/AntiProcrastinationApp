@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../Components/Sidebar/Sidebar";
+import PageLoader from "../../Components/PageLoader/PageLoader";
 import { API_URL } from "../../config";
 import "./ProfilePage.css";
 
 const ProfilePage = () => {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(() => {
+        try { const cached = localStorage.getItem("hp_cached_user"); return cached ? JSON.parse(cached) : null; } catch { return null; }
+    });
     const [isEditing, setIsEditing] = useState(false);
-    const [editBio, setEditBio] = useState("");
-    const [editPronouns, setEditPronouns] = useState("");
+    const [editBio, setEditBio] = useState(() => {
+        try { const cached = localStorage.getItem("hp_cached_user"); return cached ? JSON.parse(cached).bio || "" : ""; } catch { return ""; }
+    });
+    const [editPronouns, setEditPronouns] = useState(() => {
+        try { const cached = localStorage.getItem("hp_cached_user"); return cached ? JSON.parse(cached).pronouns || "" : ""; } catch { return ""; }
+    });
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -27,6 +34,7 @@ const ProfilePage = () => {
             setUser(data);
             setEditBio(data.bio || "");
             setEditPronouns(data.pronouns || "");
+            try { localStorage.setItem("hp_cached_user", JSON.stringify(data)); } catch {}
         })
         .catch(() => {
             localStorage.removeItem("token");
@@ -34,7 +42,16 @@ const ProfilePage = () => {
         });
     }, []);
 
-    if (!user) return null;
+    if (!user) {
+        return (
+            <div className="hp-layout">
+                <Sidebar handleLogout={handleLogout} />
+                <main className="hp-main-content">
+                    <PageLoader text="Loading Profile..." />
+                </main>
+            </div>
+        );
+    }
 
     const handleLogout = () => {
         localStorage.removeItem("token");

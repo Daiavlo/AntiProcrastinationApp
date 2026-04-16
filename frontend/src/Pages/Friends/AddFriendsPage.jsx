@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../Components/Sidebar/Sidebar";
+import PageLoader from "../../Components/PageLoader/PageLoader";
 import "./AddFriendsPage.css";
 
 import { API_URL as API } from "../../config";
@@ -12,7 +13,9 @@ const authHeaders = () => ({
 
 const AddFriendsPage = () => {
     const navigate = useNavigate();
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(() => {
+        try { const cached = localStorage.getItem("hp_cached_user"); return cached ? JSON.parse(cached) : null; } catch { return null; }
+    });
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [pendingRequests, setPendingRequests] = useState([]);
@@ -26,7 +29,10 @@ const AddFriendsPage = () => {
 
         fetch(`${API}/profile`, { headers: authHeaders() })
             .then(r => r.json())
-            .then(data => setUser(data))
+            .then(data => {
+                setUser(data);
+                try { localStorage.setItem("hp_cached_user", JSON.stringify(data)); } catch {}
+            })
             .catch(() => (window.location.href = "/auth"));
     }, []);
 
@@ -163,7 +169,16 @@ const AddFriendsPage = () => {
         }
     };
 
-    if (!user) return null;
+    if (!user) {
+        return (
+            <div className="hp-layout">
+                <Sidebar handleLogout={handleLogout} />
+                <main className="hp-main-content">
+                    <PageLoader text="Loading Community..." />
+                </main>
+            </div>
+        );
+    }
 
     return (
         <div className="hp-layout">

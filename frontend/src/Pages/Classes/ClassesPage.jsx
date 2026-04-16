@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../Components/Sidebar/Sidebar";
+import PageLoader from "../../Components/PageLoader/PageLoader";
 import { API_URL } from "../../config";
 import "./ClassesPage.css";
 
 const ClassesPage = () => {
     const navigate = useNavigate();
-    const [user, setUser] = useState(null);
-    const [classes, setClasses] = useState([]);
+    const [user, setUser] = useState(() => {
+        try { const cached = localStorage.getItem("hp_cached_user"); return cached ? JSON.parse(cached) : null; } catch { return null; }
+    });
+    const [classes, setClasses] = useState(() => {
+        try { const cached = localStorage.getItem("hp_cached_classes"); return cached ? JSON.parse(cached) : []; } catch { return []; }
+    });
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editingClassId, setEditingClassId] = useState(null);
@@ -23,7 +28,10 @@ const ClassesPage = () => {
             headers: { "Authorization": `Bearer ${token}` }
         })
         .then(res => res.json())
-        .then(data => setClasses(data || []))
+        .then(data => {
+            setClasses(data || []);
+            try { localStorage.setItem("hp_cached_classes", JSON.stringify(data || [])); } catch {}
+        })
         .catch(console.error);
     };
 
@@ -34,7 +42,10 @@ const ClassesPage = () => {
         
         fetch(`${API_URL}/profile`, { headers })
             .then(res => res.json())
-            .then(data => setUser(data))
+            .then(data => {
+                setUser(data);
+                try { localStorage.setItem("hp_cached_user", JSON.stringify(data)); } catch {}
+            })
             .catch(() => navigate("/auth"));
 
         fetchClasses(token);
@@ -90,7 +101,16 @@ const ClassesPage = () => {
         navigate("/auth");
     };
 
-    if (!user) return null;
+    if (!user) {
+        return (
+            <div className="hp-layout">
+                <Sidebar handleLogout={handleLogout} />
+                <main className="hp-main-content">
+                    <PageLoader text="Loading Classes..." />
+                </main>
+            </div>
+        );
+    }
 
     return (
         <div className="hp-layout">

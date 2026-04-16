@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Sidebar from "../../Components/Sidebar/Sidebar";
+import PageLoader from "../../Components/PageLoader/PageLoader";
 import { API_URL } from "../../config";
 import "./TasksPage.css";
 
@@ -22,9 +23,15 @@ const taskDateStr = (task) => task.due_date ? task.due_date.slice(0, 10) : null;
 // ─────────────────────────────────────────────────────────────────────────────
 
 const TasksPage = () => {
-    const [user, setUser] = useState(null);
-    const [tasks, setTasks] = useState([]);
-    const [classes, setClasses] = useState([]);
+    const [user, setUser] = useState(() => {
+        try { const cached = localStorage.getItem("hp_cached_user"); return cached ? JSON.parse(cached) : null; } catch { return null; }
+    });
+    const [tasks, setTasks] = useState(() => {
+        try { const cached = localStorage.getItem("hp_cached_tasks"); return cached ? JSON.parse(cached) : []; } catch { return []; }
+    });
+    const [classes, setClasses] = useState(() => {
+        try { const cached = localStorage.getItem("hp_cached_classes"); return cached ? JSON.parse(cached) : []; } catch { return []; }
+    });
     const location = useLocation();
 
     // view toggle
@@ -54,14 +61,20 @@ const TasksPage = () => {
             headers: { "Authorization": `Bearer ${token}` }
         })
         .then(res => res.json())
-        .then(data => setClasses(data || []))
+        .then(data => {
+            setClasses(data || []);
+            try { localStorage.setItem("hp_cached_classes", JSON.stringify(data || [])); } catch {}
+        })
         .catch(console.error);
     };
 
     const fetchTasks = (token) => {
         fetch(`${API_URL}/tasks`, { headers: { "Authorization": `Bearer ${token}` } })
             .then(res => res.json())
-            .then(data => setTasks(data || []))
+            .then(data => {
+                setTasks(data || []);
+                try { localStorage.setItem("hp_cached_tasks", JSON.stringify(data || [])); } catch {}
+            })
             .catch(console.error);
     };
 
@@ -72,7 +85,10 @@ const TasksPage = () => {
         
         fetch(`${API_URL}/profile`, { headers })
             .then(res => res.json())
-            .then(data => setUser(data))
+            .then(data => {
+                setUser(data);
+                try { localStorage.setItem("hp_cached_user", JSON.stringify(data)); } catch {}
+            })
             .catch(() => (window.location.href = "/auth"));
 
         fetchTasks(token);
@@ -263,6 +279,17 @@ const TasksPage = () => {
     };
 
     // ── render ────────────────────────────────────────────────────────────────
+
+    if (!user) {
+        return (
+            <div className="hp-layout">
+                <Sidebar handleLogout={handleLogout} />
+                <main className="hp-main-content">
+                    <PageLoader text="Loading Assignments..." />
+                </main>
+            </div>
+        );
+    }
 
     return (
         <div className="hp-layout">
@@ -539,16 +566,16 @@ const TasksPage = () => {
                                             <option value="high">High</option>
                                         </select>
                                     </div>
-                                    <div className="form-group half">
-                                        <label>Class</label>
-                                        <select value={newTask.class_id}
-                                            onChange={(e) => setNewTask({...newTask, class_id: e.target.value})}>
-                                            <option value="">General (No Class)</option>
-                                            {classes.map(c => (
-                                                <option key={c.class_id} value={c.class_id}>{c.name}</option>
-                                            ))}
-                                        </select>
-                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label>Class</label>
+                                    <select value={newTask.class_id}
+                                        onChange={(e) => setNewTask({...newTask, class_id: e.target.value})}>
+                                        <option value="">General (No Class)</option>
+                                        {classes.map(c => (
+                                            <option key={c.class_id} value={c.class_id}>{c.name}</option>
+                                        ))}
+                                    </select>
                                 </div>
                                 <div className="task-modal-actions">
                                     {isEditing && (

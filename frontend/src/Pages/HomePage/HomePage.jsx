@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../Components/Sidebar/Sidebar";
+import PageLoader from "../../Components/PageLoader/PageLoader";
 import "./HomePage.css";
 
 import { API_URL as API } from "../../config";
@@ -8,9 +9,15 @@ const authHeaders = () => ({ "Authorization": `Bearer ${localStorage.getItem("to
 
 const HomePage = () => {
     const navigate = useNavigate();
-    const [user, setUser] = useState(null);
-    const [tasks, setTasks] = useState([]);
-    const [friends, setFriends] = useState([]);
+    const [user, setUser] = useState(() => {
+        try { const cached = localStorage.getItem("hp_cached_user"); return cached ? JSON.parse(cached) : null; } catch { return null; }
+    });
+    const [tasks, setTasks] = useState(() => {
+        try { const cached = localStorage.getItem("hp_cached_tasks"); return cached ? JSON.parse(cached) : []; } catch { return []; }
+    });
+    const [friends, setFriends] = useState(() => {
+        try { const cached = localStorage.getItem("hp_cached_friends"); return cached ? JSON.parse(cached) : []; } catch { return []; }
+    });
     const [showNotifications, setShowNotifications] = useState(false);
 
     const notifications = useMemo(() => {
@@ -60,13 +67,20 @@ const HomePage = () => {
         // Fetch Profile
         fetch(`${API}/profile`, { headers: authHeaders() })
             .then(res => res.json())
-            .then(data => { setUser(data); loadFriends(data); })
+            .then(data => { 
+                setUser(data); 
+                localStorage.setItem("hp_cached_user", JSON.stringify(data));
+                loadFriends(data); 
+            })
             .catch(() => navigate("/auth"));
 
         // Fetch Tasks
         fetch(`${API}/tasks`, { headers: authHeaders() })
             .then(res => res.json())
-            .then(data => setTasks(data || []))
+            .then(data => {
+                setTasks(data || []);
+                localStorage.setItem("hp_cached_tasks", JSON.stringify(data || []));
+            })
             .catch(console.error);
 
     }, [navigate]);
@@ -98,6 +112,7 @@ const HomePage = () => {
             })
         );
         setFriends(enriched);
+        localStorage.setItem("hp_cached_friends", JSON.stringify(enriched));
     }, []);
 
     const handleLogout = () => {
@@ -115,7 +130,16 @@ const HomePage = () => {
         ));
     };
 
-    if (!user) return null;
+    if (!user) {
+        return (
+            <div className="hp-layout">
+                <Sidebar handleLogout={handleLogout} />
+                <main className="hp-main-content">
+                    <PageLoader text="Loading Dashboard..." />
+                </main>
+            </div>
+        );
+    }
 
     return (
         <div className="hp-layout">

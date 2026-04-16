@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../Components/Sidebar/Sidebar";
 import ComparePointsModal from "../Profile/ComparePointsModal";
+import PageLoader from "../../Components/PageLoader/PageLoader";
 import "./FriendsPage.css";
 
 import { API_URL as API } from "../../config";
@@ -13,9 +14,15 @@ const authHeaders = () => ({
 
 const FriendsPage = () => {
     const navigate = useNavigate();
-    const [user, setUser] = useState(null);
-    const [friends, setFriends] = useState([]);
-    const [pendingRequests, setPendingRequests] = useState([]);
+    const [user, setUser] = useState(() => {
+        try { const cached = localStorage.getItem("hp_cached_user"); return cached ? JSON.parse(cached) : null; } catch { return null; }
+    });
+    const [friends, setFriends] = useState(() => {
+        try { const cached = localStorage.getItem("hp_cached_friends"); return cached ? JSON.parse(cached) : []; } catch { return []; }
+    });
+    const [pendingRequests, setPendingRequests] = useState(() => {
+        try { const cached = localStorage.getItem("hp_cached_pending_requests"); return cached ? JSON.parse(cached) : []; } catch { return []; }
+    });
     const [actionLoading, setActionLoading] = useState({});   // { userId: true }
     const [compareTarget, setCompareTarget] = useState(null); // friend to compare with
 
@@ -53,6 +60,7 @@ const FriendsPage = () => {
             })
         );
         setFriends(enriched);
+        try { localStorage.setItem("hp_cached_friends", JSON.stringify(enriched)); } catch {}
     }, [user]);
 
     const leaderboard = useMemo(() => {
@@ -69,6 +77,7 @@ const FriendsPage = () => {
         if (!res.ok) { setPendingRequests([]); return; }
         const data = await res.json();
         setPendingRequests(data || []);
+        try { localStorage.setItem("hp_cached_pending_requests", JSON.stringify(data || [])); } catch {}
     }, []);
 
 
@@ -79,7 +88,10 @@ const FriendsPage = () => {
 
         fetch(`${API}/profile`, { headers: authHeaders() })
             .then(r => r.json())
-            .then(data => setUser(data))
+            .then(data => {
+                setUser(data);
+                try { localStorage.setItem("hp_cached_user", JSON.stringify(data)); } catch {}
+            })
             .catch(() => (window.location.href = "/auth"));
     }, []);
 
@@ -133,7 +145,16 @@ const FriendsPage = () => {
 
     const navigateToProfile = (id) => navigate(`/profile/${id}`);
 
-    if (!user) return null;
+    if (!user) {
+        return (
+            <div className="hp-layout">
+                <Sidebar handleLogout={handleLogout} />
+                <main className="hp-main-content">
+                    <PageLoader text="Loading Friends..." />
+                </main>
+            </div>
+        );
+    }
 
     return (
         <div className="hp-layout">

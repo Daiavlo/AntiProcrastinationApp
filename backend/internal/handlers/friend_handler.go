@@ -4,6 +4,9 @@ import (
 	"database/sql"
 	"encoding/json"
 	"net/http"
+	"strconv"
+
+	"github.com/go-chi/chi/v5"
 
 	"github.com/daiavlo/antiprocrastination/backend/internal/middleware"
 	"github.com/daiavlo/antiprocrastination/backend/internal/models"
@@ -198,4 +201,33 @@ func (h *FriendHandler) SearchUsers(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(users)
+}
+
+// DELETE /api/friends/{id}
+func (h *FriendHandler) RemoveFriend(w http.ResponseWriter, r *http.Request) {
+	userID := r.Context().Value(middleware.UserIDKey).(int64)
+	friendIDStr := chi.URLParam(r, "id")
+	
+	friendID, err := strconv.ParseInt(friendIDStr, 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid friend ID", http.StatusBadRequest)
+		return
+	}
+
+	uid, fid := userID, friendID
+	if uid > fid {
+		uid, fid = fid, uid
+	}
+
+	_, err = h.DB.Exec(
+		`DELETE FROM Connection
+         WHERE user_id = $1 AND friend_id = $2`,
+		uid, fid,
+	)
+	if err != nil {
+		http.Error(w, "Failed to remove friend", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }

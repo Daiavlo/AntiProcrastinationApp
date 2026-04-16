@@ -344,17 +344,21 @@ const TasksPage = () => {
                                         onClick={() => setDetailTask(task)}
                                         style={{ cursor: "pointer" }}
                                     >
-                                        <div className="priority-indicator" style={{ backgroundColor: task.class_color || getPriorityColor(task.priority) === 'high' ? 'var(--accent)' : getPriorityColor(task.priority) === 'medium' ? 'var(--warning)' : 'var(--info)' }}></div>
                                         <div className="task-row-main">
                                             <div className="task-row-top">
-                                                <span className="task-row-cat" style={{ color: task.class_color || 'var(--text-muted)' }}>
-                                                    {task.class_name || "General"}
-                                                </span>
+                                                <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                                                    <span className="task-row-cat" style={{ color: task.class_color || 'var(--text-muted)' }}>
+                                                        {task.class_name || "General"}
+                                                    </span>
+                                                    <span className={`task-list-priority-badge priority--${getPriorityColor(task.priority)}`}>
+                                                        {task.priority?.toUpperCase() || "MEDIUM"}
+                                                    </span>
+                                                </div>
                                                 <div style={{ display:"flex", alignItems:"center", gap:"0.5rem" }}>
                                                     {isOverdue(task) && (
                                                         <span className="overdue-badge">Overdue</span>
                                                     )}
-                                                    <span className="task-row-date">Due: {task.due_date ? new Date(task.due_date).toLocaleDateString() : "No date"}</span>
+                                                    <span className="task-row-date">🗓️ Due: {task.due_date ? new Date(task.due_date).toLocaleDateString() : "No date"}</span>
                                                 </div>
                                             </div>
                                             <h3 className="task-row-title">{task.title}</h3>

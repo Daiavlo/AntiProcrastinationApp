@@ -70,6 +70,11 @@
     background-color: var(--bg-primary);
     border-radius: 15px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+}
+
+.user-profile-capsule:hover {
+    background-color: var(--sidebar-hover);
 }
 
 .sidebar-avatar {

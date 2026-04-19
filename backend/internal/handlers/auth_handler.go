@@ -109,12 +109,12 @@ func (h *AuthHandler) GetProfile(w http.ResponseWriter, r *http.Request) {
 		profile.Avatar = "https://api.dicebear.com/7.x/bottts/svg?seed=" + profile.Username
 	}
 
-	// Calculate points (assignments completed this week, Sunday-Saturday)
+	// Calculate points (assignments completed this week, resetting Monday 8am)
 	err = h.DB.QueryRow(`
 		SELECT COUNT(*) FROM Assignment 
 		WHERE user_id = $1 
 		AND status = 'completed' 
-		AND updated_at >= date_trunc('week', now() + interval '1 day') - interval '1 day'
+		AND updated_at >= date_trunc('week', now() - interval '8 hours') + interval '8 hours'
 	`, userID).Scan(&profile.Points)
 	if err != nil {
 		log.Printf("Failed to count weekly completed tasks for user %d: %v", userID, err)
@@ -156,12 +156,12 @@ func (h *AuthHandler) GetAlienProfile(w http.ResponseWriter, r *http.Request) {
 		profile.Avatar = "https://api.dicebear.com/7.x/bottts/svg?seed=" + profile.Username
 	}
 
-	// Calculate points
+	// Calculate points (assignments completed this week, resetting Monday 8am)
 	err = h.DB.QueryRow(`
 		SELECT COUNT(*) FROM Assignment 
 		WHERE user_id = $1 
 		AND status = 'completed' 
-		AND updated_at >= date_trunc('week', now() + interval '1 day') - interval '1 day'
+		AND updated_at >= date_trunc('week', now() - interval '8 hours') + interval '8 hours'
 	`, profile.UserID).Scan(&profile.Points)
 	if err != nil {
 		profile.Points = 0

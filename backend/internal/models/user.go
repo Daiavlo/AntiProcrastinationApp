@@ -27,7 +27,20 @@ type UserProfileResponse struct {
 	Email    string `json:"email"`
 	Avatar   string `json:"avatar"`
 	Banner   string `json:"banner"`
-	Bio      string `json:"bio"`
-	Pronouns string `json:"pronouns"`
-	Points   int    `json:"points"`
+	Bio      string               `json:"bio"`
+	Pronouns string               `json:"pronouns"`
+	Points   int                  `json:"points"`
+	WeeklySummary []WeeklyPointSummary `json:"weekly_summary,omitempty"`
+}
+
+type ClassStat struct {
+	ClassName string `json:"class_name"`
+	Color     string `json:"color"`
+	Points    int    `json:"points"`
+}
+
+type WeeklyPointSummary struct {
+	WeekStart  time.Time   `json:"week_start"`
+	Points     int         `json:"points"`
+	ClassStats []ClassStat `json:"class_stats"`
 }

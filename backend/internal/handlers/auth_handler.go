@@ -109,17 +109,7 @@ func (h *AuthHandler) GetProfile(w http.ResponseWriter, r *http.Request) {
 		profile.Avatar = "https://api.dicebear.com/7.x/bottts/svg?seed=" + profile.Username
 	}
 
-	// Calculate points (assignments completed this week, resetting Monday 8am)
-	err = h.DB.QueryRow(`
-		SELECT COUNT(*) FROM Assignment 
-		WHERE user_id = $1 
-		AND status = 'completed' 
-		AND updated_at >= date_trunc('week', now() - interval '8 hours') + interval '8 hours'
-	`, userID).Scan(&profile.Points)
-	if err != nil {
-		log.Printf("Failed to count weekly completed tasks for user %d: %v", userID, err)
-		profile.Points = 0
-	}
+	h.populatePointsAndSummary(userID, &profile)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(profile)
@@ -156,16 +146,7 @@ func (h *AuthHandler) GetAlienProfile(w http.ResponseWriter, r *http.Request) {
 		profile.Avatar = "https://api.dicebear.com/7.x/bottts/svg?seed=" + profile.Username
 	}
 
-	// Calculate points (assignments completed this week, resetting Monday 8am)
-	err = h.DB.QueryRow(`
-		SELECT COUNT(*) FROM Assignment 
-		WHERE user_id = $1 
-		AND status = 'completed' 
-		AND updated_at >= date_trunc('week', now() - interval '8 hours') + interval '8 hours'
-	`, profile.UserID).Scan(&profile.Points)
-	if err != nil {
-		profile.Points = 0
-	}
+	h.populatePointsAndSummary(int64(profile.UserID), &profile)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(profile)
@@ -278,3 +259,64 @@ func (h *AuthHandler) UpdateProfile(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func (h *AuthHandler) populatePointsAndSummary(userID int64, profile *models.UserProfileResponse) {
+	// Current points (this week)
+	err := h.DB.QueryRow(`
+		SELECT COUNT(*) FROM Assignment 
+		WHERE user_id = $1 
+		AND status = 'completed' 
+		AND updated_at >= date_trunc('week', now() - interval '8 hours') + interval '8 hours'
+	`, userID).Scan(&profile.Points)
+	if err != nil {
+		profile.Points = 0
+	}
+
+	// Weekly summary
+	rows, err := h.DB.Query(`
+		SELECT 
+			date_trunc('week', a.updated_at - interval '8 hours') + interval '8 hours' as week_start,
+			COALESCE(c.name, 'Uncategorized') as class_name,
+			COALESCE(c.color, '#808080') as color,
+			COUNT(a.Assignment_id) as points
+		FROM Assignment a
+		LEFT JOIN Class c ON a.class_id = c.class_id
+		WHERE a.user_id = $1 AND a.status = 'completed'
+		GROUP BY 1, 2, 3
+		ORDER BY 1 DESC, 4 DESC
+	`, userID)
+
+	if err == nil {
+		defer rows.Close()
+		summaryMap := make(map[time.Time]*models.WeeklyPointSummary)
+		var orderedWeeks []time.Time
+
+		for rows.Next() {
+			var weekStart time.Time
+			var className, color string
+			var points int
+			if err := rows.Scan(&weekStart, &className, &color, &points); err == nil {
+				if _, exists := summaryMap[weekStart]; !exists {
+					summaryMap[weekStart] = &models.WeeklyPointSummary{
+						WeekStart:  weekStart,
+						Points:     0,
+						ClassStats: []models.ClassStat{},
+					}
+					orderedWeeks = append(orderedWeeks, weekStart)
+				}
+				
+				summary := summaryMap[weekStart]
+				summary.Points += points
+				summary.ClassStats = append(summary.ClassStats, models.ClassStat{
+					ClassName: className,
+					Color:     color,
+					Points:    points,
+				})
+			}
+		}
+		
+		profile.WeeklySummary = make([]models.WeeklyPointSummary, 0, len(orderedWeeks))
+		for _, w := range orderedWeeks {
+			profile.WeeklySummary = append(profile.WeeklySummary, *summaryMap[w])
+		}
+	}
+}

@@ -248,6 +248,179 @@
     gap: 15px;
 }
 
+/* Tabs */
+.profile-tabs {
+    display: flex;
+    gap: 10px;
+    padding: 0 40px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid var(--border);
+}
+
+.profile-tab {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 16px;
+    font-weight: 700;
+    padding: 12px 20px;
+    cursor: pointer;
+    position: relative;
+    transition: 0.2s;
+}
+
+.profile-tab:hover {
+    color: var(--text-primary);
+}
+
+.profile-tab.active {
+    color: var(--accent);
+}
+
+.profile-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: var(--accent);
+    border-radius: 3px 3px 0 0;
+}
+
+/* Weekly Summary Sliding Dashboard */
+.profile-weekly-summary {
+    padding: 0 40px 40px 40px;
+}
+
+.no-summary-msg {
+    color: var(--text-secondary);
+    font-style: italic;
+    text-align: center;
+    padding: 40px 0;
+}
+
+.week-slider-container {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 20px;
+    padding-bottom: 20px; /* Space for scrollbar */
+    /* Custom Scrollbar for slider */
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+
+.week-slider-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.week-slider-container::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 4px;
+}
+
+.week-slider-container::-webkit-scrollbar-thumb {
+    background-color: var(--border);
+    border-radius: 4px;
+}
+
+.week-card {
+    scroll-snap-align: start;
+    flex: 0 0 320px; /* Fixed width for cards */
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.week-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+.week-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+}
+
+.week-total-points {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.points-value {
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--accent);
+    line-height: 1;
+}
+
+.points-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+}
+
+.week-class-breakdown {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.class-stat-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: var(--bg-primary);
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+}
+
+.class-color-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.class-name {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.class-points {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text-secondary);
+}
+
+.no-class-stats {
+    font-size: 14px;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
 /* --- Mobile Adjustments --- */
 @media (max-width: 768px) {
     .profile-header-info {

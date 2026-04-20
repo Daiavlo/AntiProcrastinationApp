@@ -12,6 +12,7 @@ const ProfilePage = () => {
     const [editBio, setEditBio] = useState(() => {
         try { const cached = localStorage.getItem("hp_cached_user"); return cached ? JSON.parse(cached).bio || "" : ""; } catch { return ""; }
     });
+    const [activeTab, setActiveTab] = useState("overview");
     const [editPronouns, setEditPronouns] = useState(() => {
         try { const cached = localStorage.getItem("hp_cached_user"); return cached ? JSON.parse(cached).pronouns || "" : ""; } catch { return ""; }
     });
@@ -186,13 +187,58 @@ const ProfilePage = () => {
                         </div>
                     </div>
 
-                    {/* Stats Summary */}
-                    <div className="profile-simple-stats">
-                        <div className="stat-card">
-                            <span className="stat-value">{user.points || 0}</span>
-                            <span className="stat-label">Points</span>
-                        </div>
+                    {/* Tabs */}
+                    <div className="profile-tabs">
+                        <button className={`profile-tab ${activeTab === 'overview' ? 'active' : ''}`} onClick={() => setActiveTab('overview')}>Overview</button>
+                        <button className={`profile-tab ${activeTab === 'summary' ? 'active' : ''}`} onClick={() => setActiveTab('summary')}>Weekly Summary</button>
                     </div>
+
+                    {/* Tab Content */}
+                    {activeTab === 'overview' && (
+                        <div className="profile-simple-stats">
+                            <div className="stat-card">
+                                <span className="stat-value">{user.points || 0}</span>
+                                <span className="stat-label">Points (This Week)</span>
+                            </div>
+                        </div>
+                    )}
+
+                    {activeTab === 'summary' && (
+                        <div className="profile-weekly-summary">
+                            {(!user.weekly_summary || user.weekly_summary.length === 0) ? (
+                                <p className="no-summary-msg">No completed assignments yet.</p>
+                            ) : (
+                                <div className="week-slider-container">
+                                    {user.weekly_summary.map((week, idx) => {
+                                        const weekDate = new Date(week.week_start);
+                                        const formattedWeek = weekDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+                                        return (
+                                            <div key={idx} className="week-card">
+                                                <h3 className="week-title">Week of {formattedWeek}</h3>
+                                                <div className="week-total-points">
+                                                    <span className="points-value">{week.points}</span>
+                                                    <span className="points-label">Total Points</span>
+                                                </div>
+                                                <div className="week-class-breakdown">
+                                                    {week.class_stats && week.class_stats.length > 0 ? (
+                                                        week.class_stats.map((cStat, i) => (
+                                                            <div key={i} className="class-stat-item">
+                                                                <span className="class-color-dot" style={{ backgroundColor: cStat.color }}></span>
+                                                                <span className="class-name">{cStat.class_name}</span>
+                                                                <span className="class-points">{cStat.points}</span>
+                                                            </div>
+                                                        ))
+                                                    ) : (
+                                                        <span className="no-class-stats">No classes</span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
             </main>
         </div>
